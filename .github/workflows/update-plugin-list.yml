@@ -41,8 +41,6 @@ jobs:
             name: '',
             description: '',
             version: '',
-            author: '',
-            license: '',
             requiresWP: '',
             requiresPHP: '',
             uri: '',
@@ -78,8 +76,6 @@ jobs:
             name: /Plugin name:\s*(.+?)$/im,
             description: /Description:\s*(.+?)$/im,
             version: /Version:\s*(.+?)\.?$/im,
-            author: /Author:\s*(.+?)$/im,
-            license: /License:\s*(.+?)$/im,
             requiresWP: /Requires at least:\s*(.+?)$/im,
             requiresPHP: /Requires PHP:\s*(.+?)$/im,
             uri: /Plugin URI:\s*(.+?)$/im,
@@ -130,19 +126,17 @@ jobs:
             return '> No mu-plugins found in the mu-plugins directory.';
           }
 
-          let markdown = '| Plugin Name | Description | Version | Author | WP Version | PHP Version | License |\n';
-          markdown += '|-------------|-------------|---------|--------|------------|-------------|----------|\n';
+          let markdown = '| Plugin Name | Description | Version | WP Version | PHP Version |\n';
+          markdown += '|-------------|-------------|---------|------------|-------------|\n';
 
           for (const plugin of plugins) {
             const name = plugin.uri ? `[${plugin.name}](${plugin.uri})` : plugin.name;
             const description = plugin.description || 'N/A';
             const version = plugin.version || 'N/A';
-            const author = plugin.author || 'N/A';
             const requiresWP = plugin.requiresWP || 'N/A';
             const requiresPHP = plugin.requiresPHP || 'N/A';
-            const license = plugin.license || 'N/A';
             
-            markdown += `| ${name} | ${description} | ${version} | ${author} | ${requiresWP}+ | ${requiresPHP}+ | ${license} |\n`;
+            markdown += `| ${name} | ${description} | ${version} | ${requiresWP}+ | ${requiresPHP}+ |\n`;
           }
 
           return markdown;
