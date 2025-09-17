@@ -149,10 +149,10 @@ jobs:
         }
 
         function updateReadme(pluginTable) {
-          const readmePath = path.join(process.cwd(), 'README.md');
+          const readmePath = path.join(process.cwd(), 'README.MD');
           
           if (!fs.existsSync(readmePath)) {
-            console.log('README.md not found, creating new one...');
+            console.log('README.MD not found, creating new one...');
             const newReadme = `# WordPress MU-Plugins Collection
 
         ## Available Plugins
