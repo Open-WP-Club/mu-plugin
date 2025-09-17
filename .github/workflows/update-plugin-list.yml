@@ -1,0 +1,241 @@
+name: Update Plugin List
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: 
+      - 'mu-plugins/**'
+      - '.github/workflows/update-plugin-list.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths: 
+      - 'mu-plugins/**'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-plugin-list:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Create and run plugin scanner
+      run: |
+        cat << 'EOF' > scan-plugins.js
+        const fs = require('fs');
+        const path = require('path');
+
+        function extractPluginInfo(filePath, content) {
+          const lines = content.split('\n');
+          const plugin = {
+            file: path.basename(filePath),
+            name: '',
+            description: '',
+            version: '',
+            author: '',
+            license: '',
+            requiresWP: '',
+            requiresPHP: '',
+            uri: '',
+            textDomain: ''
+          };
+
+          // Look for the plugin header block (/** ... */)
+          let inHeader = false;
+          let headerContent = [];
+          
+          for (let line of lines) {
+            const trimmedLine = line.trim();
+            
+            if (trimmedLine.startsWith('/**')) {
+              inHeader = true;
+              continue;
+            }
+            
+            if (trimmedLine.endsWith('*/') && inHeader) {
+              break;
+            }
+            
+            if (inHeader) {
+              headerContent.push(trimmedLine.replace(/^\*\s?/, ''));
+            }
+          }
+
+          // Parse header content
+          const headerText = headerContent.join('\n');
+          
+          // Extract plugin information using regex patterns
+          const patterns = {
+            name: /Plugin name:\s*(.+?)$/im,
+            description: /Description:\s*(.+?)$/im,
+            version: /Version:\s*(.+?)\.?$/im,
+            author: /Author:\s*(.+?)$/im,
+            license: /License:\s*(.+?)$/im,
+            requiresWP: /Requires at least:\s*(.+?)$/im,
+            requiresPHP: /Requires PHP:\s*(.+?)$/im,
+            uri: /Plugin URI:\s*(.+?)$/im,
+            textDomain: /Text Domain:\s*(.+?)$/im
+          };
+
+          for (const [key, pattern] of Object.entries(patterns)) {
+            const match = headerText.match(pattern);
+            if (match) {
+              plugin[key] = match[1].trim();
+            }
+          }
+
+          return plugin;
+        }
+
+        function scanPluginsDirectory() {
+          const pluginsDir = path.join(process.cwd(), 'mu-plugins');
+          
+          if (!fs.existsSync(pluginsDir)) {
+            console.log('mu-plugins directory not found');
+            return [];
+          }
+
+          const plugins = [];
+          const files = fs.readdirSync(pluginsDir, { withFileTypes: true });
+
+          for (const file of files) {
+            if (file.isFile() && file.name.endsWith('.php')) {
+              const filePath = path.join(pluginsDir, file.name);
+              const content = fs.readFileSync(filePath, 'utf8');
+              
+              // Check if it's a valid plugin file (has plugin header)
+              if (content.includes('Plugin name:') || content.includes('Plugin Name:')) {
+                const pluginInfo = extractPluginInfo(filePath, content);
+                if (pluginInfo.name) {
+                  plugins.push(pluginInfo);
+                }
+              }
+            }
+          }
+
+          return plugins.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        function generateMarkdownTable(plugins) {
+          if (plugins.length === 0) {
+            return '> No mu-plugins found in the mu-plugins directory.';
+          }
+
+          let markdown = '| Plugin Name | Description | Version | Author | WP Version | PHP Version | License |\n';
+          markdown += '|-------------|-------------|---------|--------|------------|-------------|----------|\n';
+
+          for (const plugin of plugins) {
+            const name = plugin.uri ? `[${plugin.name}](${plugin.uri})` : plugin.name;
+            const description = plugin.description || 'N/A';
+            const version = plugin.version || 'N/A';
+            const author = plugin.author || 'N/A';
+            const requiresWP = plugin.requiresWP || 'N/A';
+            const requiresPHP = plugin.requiresPHP || 'N/A';
+            const license = plugin.license || 'N/A';
+            
+            markdown += `| ${name} | ${description} | ${version} | ${author} | ${requiresWP}+ | ${requiresPHP}+ | ${license} |\n`;
+          }
+
+          return markdown;
+        }
+
+        function updateReadme(pluginTable) {
+          const readmePath = path.join(process.cwd(), 'README.md');
+          
+          if (!fs.existsSync(readmePath)) {
+            console.log('README.md not found, creating new one...');
+            const newReadme = `# WordPress MU-Plugins Collection
+
+        ## Available Plugins
+
+        <!-- PLUGIN_LIST_START -->
+        ${pluginTable}
+        <!-- PLUGIN_LIST_END -->
+
+        ## Installation
+
+        1. Download the desired plugin files
+        2. Upload them to your \`wp-content/mu-plugins/\` directory
+        3. The plugins will be automatically activated
+
+        ## Contributing
+
+        Feel free to contribute new mu-plugins or improve existing ones!
+        `;
+            
+            fs.writeFileSync(readmePath, newReadme);
+            console.log('Created new README.md with plugin list');
+            return;
+          }
+
+          let content = fs.readFileSync(readmePath, 'utf8');
+          
+          // Look for the plugin list markers
+          const startMarker = '<!-- PLUGIN_LIST_START -->';
+          const endMarker = '<!-- PLUGIN_LIST_END -->';
+          
+          const startIndex = content.indexOf(startMarker);
+          const endIndex = content.indexOf(endMarker);
+          
+          if (startIndex !== -1 && endIndex !== -1) {
+            // Replace existing content between markers
+            const before = content.substring(0, startIndex + startMarker.length);
+            const after = content.substring(endIndex);
+            content = before + '\n' + pluginTable + '\n' + after;
+            
+            fs.writeFileSync(readmePath, content);
+            console.log('Updated README.md with new plugin list');
+          } else {
+            // Add markers and content at the end if they don't exist
+            content += `\n\n## Available Plugins\n\n${startMarker}\n${pluginTable}\n${endMarker}\n`;
+            fs.writeFileSync(readmePath, content);
+            console.log('Added plugin list section to README.md');
+          }
+        }
+
+        // Main execution
+        console.log('Scanning mu-plugins directory...');
+        const plugins = scanPluginsDirectory();
+        console.log(`Found ${plugins.length} plugins`);
+
+        if (plugins.length > 0) {
+          console.log('Plugins found:');
+          plugins.forEach(plugin => {
+            console.log(`  - ${plugin.name} (${plugin.version})`);
+          });
+        }
+
+        const pluginTable = generateMarkdownTable(plugins);
+        updateReadme(pluginTable);
+        
+        console.log('Plugin list update completed!');
+        EOF
+
+        node scan-plugins.js
+
+    - name: Check for changes
+      id: verify-changed-files
+      run: |
+        if git diff --quiet; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push changes
+      if: steps.verify-changed-files.outputs.changed == 'true'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add README.md
+        git commit -m "🤖 Update plugin list automatically" || exit 0
+        git push
