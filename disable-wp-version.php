@@ -1,5 +1,4 @@
 <?php
-defined('ABSPATH') or die();
 
 /**
  * A utility plugin to disable WP version
