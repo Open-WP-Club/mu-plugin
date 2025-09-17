@@ -173,7 +173,7 @@ jobs:
         `;
             
             fs.writeFileSync(readmePath, newReadme);
-            console.log('Created new README.md with plugin list');
+            console.log('Created new README.MD with plugin list');
             return;
           }
 
@@ -193,12 +193,12 @@ jobs:
             content = before + '\n' + pluginTable + '\n' + after;
             
             fs.writeFileSync(readmePath, content);
-            console.log('Updated README.md with new plugin list');
+            console.log('Updated README.MD with new plugin list');
           } else {
             // Add markers and content at the end if they don't exist
             content += `\n\n## Available Plugins\n\n${startMarker}\n${pluginTable}\n${endMarker}\n`;
             fs.writeFileSync(readmePath, content);
-            console.log('Added plugin list section to README.md');
+            console.log('Added plugin list section to README.MD');
           }
         }
 
@@ -236,6 +236,6 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add README.md
+        git add README.MD
         git commit -m "🤖 Update plugin list automatically" || exit 0
         git push
