@@ -8,12 +8,12 @@
  * Description:       Disallows plugins known to cause issues on managed hosting platforms. Based on lists from WP Engine, Kinsta, Flywheel, GoDaddy, Bluehost, and others.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       hosting-disallowed-plugins
  * 
- * Sources (last checked September 2025):
+ * Sources:
  * WP Engine: https://wpengine.com/support/disallowed-plugins/ - Last checked: Sept 18, 2025
  * Kinsta: https://kinsta.com/docs/wordpress-hosting/wordpress-plugins-themes/wordpress-banned-incompatible-plugins/ - Last checked: Sept 18, 2025
  * Flywheel: https://getflywheel.com/wordpress-support/what-plugins-are-not-recommended/ - Last checked: Sept 18, 2025
