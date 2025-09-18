@@ -28,6 +28,7 @@
 | Plugin Name | Description | Version | WP Version | PHP Version |
 |-------------|-------------|---------|------------|-------------|
 | [Add Footer Signature](https://openwpclub.com) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
+| [Cleanup Old Revisions](https://openwpclub.com) | Automatically removes old post revisions older than 30 days and limits revisions to 5 per post. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cron Monitor](https://openwpclub.com) | Records the timestamp of the last WordPress cron execution. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Admin New User Email](https://openwpclub.com) | Prevents admin from receiving email notifications when new users register. Users still receive their welcome email. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Autosave](https://openwpclub.com) | Disables WordPress autosave functionality to improve performance and prevent unwanted draft saves. | 1.0.0 | 6.6+ | 7.4+ |
@@ -40,5 +41,7 @@
 | [Disable Unnecessary Link Headers](https://openwpclub.com) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](https://openwpclub.com) | Remove WordPress version | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable XML-RPC](https://openwpclub.com) | A utility plugin to disable XML-RPC. | 1.0.0 | 6.6+ | 7.4+ |
+| [Hosting Disallowed Plugins](https://openwpclub.com) | Disallows plugins known to cause issues on managed hosting platforms. Based on lists from WP Engine, Kinsta, Flywheel, GoDaddy, Bluehost, and others. | 1.0.0 | 6.6+ | 7.4+ |
+| [Simple Maintenance Mode](https://openwpclub.com) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
 
 <!-- PLUGIN_LIST_END -->
