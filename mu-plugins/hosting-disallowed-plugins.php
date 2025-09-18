@@ -5,7 +5,7 @@
  *
  * Plugin name:       Hosting Disallowed Plugins
  * Plugin URI:        https://openwpclub.com
- * Description:       Disallows plugins known to cause issues on managed hosting platforms. Based on lists from WP Engine, Kinsta, Flywheel, GoDaddy, Bluehost, and others.
+ * Description:       Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms.
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Version:           1.0.1
