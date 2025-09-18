@@ -41,7 +41,7 @@
 | [Disable Unnecessary Link Headers](https://openwpclub.com) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](https://openwpclub.com) | Remove WordPress version | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable XML-RPC](https://openwpclub.com) | A utility plugin to disable XML-RPC. | 1.0.0 | 6.6+ | 7.4+ |
-| [Hosting Disallowed Plugins](https://openwpclub.com) | Disallows plugins known to cause issues on managed hosting platforms. Based on lists from WP Engine, Kinsta, Flywheel, GoDaddy, Bluehost, and others. | 1.0.0 | 6.6+ | 7.4+ |
+| [Hosting Disallowed Plugins](https://openwpclub.com) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [Simple Maintenance Mode](https://openwpclub.com) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
 
 <!-- PLUGIN_LIST_END -->
