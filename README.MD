@@ -30,6 +30,7 @@
 | [Add Footer Signature](https://openwpclub.com) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cron Monitor](https://openwpclub.com) | Records the timestamp of the last WordPress cron execution. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Admin New User Email](https://openwpclub.com) | Prevents admin from receiving email notifications when new users register. Users still receive their welcome email. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Autosave](https://openwpclub.com) | Disables WordPress autosave functionality to improve performance and prevent unwanted draft saves. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Emoji Support](https://openwpclub.com) | A utility plugin to disable emoji support. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable File Editing](https://openwpclub.com) | Prevents editing of theme/plugin files from admin | 1.0.0 | N/A+ | N/A+ |
 | [Disable FloC](https://openwpclub.com) | A utility plugin to disable FLoC. | 1.0.0 | 6.6+ | 7.4+ |
