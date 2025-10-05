@@ -130,7 +130,8 @@ jobs:
           markdown += '|-------------|-------------|---------|------------|-------------|\n';
 
           for (const plugin of plugins) {
-            const name = plugin.uri ? `[${plugin.name}](${plugin.uri})` : plugin.name;
+            // Link to the actual file in the repository instead of the plugin URI
+            const name = `[${plugin.name}](mu-plugins/${plugin.file})`;
             const description = plugin.description || 'N/A';
             const version = plugin.version || 'N/A';
             const requiresWP = plugin.requiresWP || 'N/A';
@@ -149,22 +150,22 @@ jobs:
             console.log('README.MD not found, creating new one...');
             const newReadme = `# WordPress MU-Plugins Collection
 
-        ## Available Plugins
+## Available Plugins
 
-        <!-- PLUGIN_LIST_START -->
-        ${pluginTable}
-        <!-- PLUGIN_LIST_END -->
+<!-- PLUGIN_LIST_START -->
+${pluginTable}
+<!-- PLUGIN_LIST_END -->
 
-        ## Installation
+## Installation
 
-        1. Download the desired plugin files
-        2. Upload them to your \`wp-content/mu-plugins/\` directory
-        3. The plugins will be automatically activated
+1. Download the desired plugin files
+2. Upload them to your \`wp-content/mu-plugins/\` directory
+3. The plugins will be automatically activated
 
-        ## Contributing
+## Contributing
 
-        Feel free to contribute new mu-plugins or improve existing ones!
-        `;
+Feel free to contribute new mu-plugins or improve existing ones!
+`;
             
             fs.writeFileSync(readmePath, newReadme);
             console.log('Created new README.MD with plugin list');
