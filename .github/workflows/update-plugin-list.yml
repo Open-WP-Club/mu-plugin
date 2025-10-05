@@ -10,7 +10,7 @@ on:
     branches: [ main, master ]
     paths: 
       - 'mu-plugins/**'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:
 
 jobs:
   update-plugin-list:
@@ -30,7 +30,7 @@ jobs:
 
     - name: Create and run plugin scanner
       run: |
-        cat << 'EOF' > scan-plugins.js
+        cat << 'ENDOFSCRIPT' > scan-plugins.js
         const fs = require('fs');
         const path = require('path');
 
@@ -47,7 +47,6 @@ jobs:
             textDomain: ''
           };
 
-          // Look for the plugin header block (/** ... */)
           let inHeader = false;
           let headerContent = [];
           
@@ -68,10 +67,8 @@ jobs:
             }
           }
 
-          // Parse header content
           const headerText = headerContent.join('\n');
           
-          // Extract plugin information using regex patterns
           const patterns = {
             name: /Plugin name:\s*(.+?)$/im,
             description: /Description:\s*(.+?)$/im,
@@ -108,7 +105,6 @@ jobs:
               const filePath = path.join(pluginsDir, file.name);
               const content = fs.readFileSync(filePath, 'utf8');
               
-              // Check if it's a valid plugin file (has plugin header)
               if (content.includes('Plugin name:') || content.includes('Plugin Name:')) {
                 const pluginInfo = extractPluginInfo(filePath, content);
                 if (pluginInfo.name) {
@@ -130,7 +126,6 @@ jobs:
           markdown += '|-------------|-------------|---------|------------|-------------|\n';
 
           for (const plugin of plugins) {
-            // Link to the actual file in the repository instead of the plugin URI
             const name = `[${plugin.name}](mu-plugins/${plugin.file})`;
             const description = plugin.description || 'N/A';
             const version = plugin.version || 'N/A';
@@ -148,24 +143,17 @@ jobs:
           
           if (!fs.existsSync(readmePath)) {
             console.log('README.MD not found, creating new one...');
-            const newReadme = `# WordPress MU-Plugins Collection
-
-## Available Plugins
-
-<!-- PLUGIN_LIST_START -->
-${pluginTable}
-<!-- PLUGIN_LIST_END -->
-
-## Installation
-
-1. Download the desired plugin files
-2. Upload them to your \`wp-content/mu-plugins/\` directory
-3. The plugins will be automatically activated
-
-## Contributing
-
-Feel free to contribute new mu-plugins or improve existing ones!
-`;
+            const newReadme = '# WordPress MU-Plugins Collection\n\n' +
+              '## Available Plugins\n\n' +
+              '<!-- PLUGIN_LIST_START -->\n' +
+              pluginTable + '\n' +
+              '<!-- PLUGIN_LIST_END -->\n\n' +
+              '## Installation\n\n' +
+              '1. Download the desired plugin files\n' +
+              '2. Upload them to your `wp-content/mu-plugins/` directory\n' +
+              '3. The plugins will be automatically activated\n\n' +
+              '## Contributing\n\n' +
+              'Feel free to contribute new mu-plugins or improve existing ones!\n';
             
             fs.writeFileSync(readmePath, newReadme);
             console.log('Created new README.MD with plugin list');
@@ -174,7 +162,6 @@ Feel free to contribute new mu-plugins or improve existing ones!
 
           let content = fs.readFileSync(readmePath, 'utf8');
           
-          // Look for the plugin list markers
           const startMarker = '<!-- PLUGIN_LIST_START -->';
           const endMarker = '<!-- PLUGIN_LIST_END -->';
           
@@ -182,7 +169,6 @@ Feel free to contribute new mu-plugins or improve existing ones!
           const endIndex = content.indexOf(endMarker);
           
           if (startIndex !== -1 && endIndex !== -1) {
-            // Replace existing content between markers
             const before = content.substring(0, startIndex + startMarker.length);
             const after = content.substring(endIndex);
             content = before + '\n' + pluginTable + '\n' + after;
@@ -190,14 +176,12 @@ Feel free to contribute new mu-plugins or improve existing ones!
             fs.writeFileSync(readmePath, content);
             console.log('Updated README.MD with new plugin list');
           } else {
-            // Add markers and content at the end if they don't exist
-            content += `\n\n## Available Plugins\n\n${startMarker}\n${pluginTable}\n${endMarker}\n`;
+            content += '\n\n## Available Plugins\n\n' + startMarker + '\n' + pluginTable + '\n' + endMarker + '\n';
             fs.writeFileSync(readmePath, content);
             console.log('Added plugin list section to README.MD');
           }
         }
 
-        // Main execution
         console.log('Scanning mu-plugins directory...');
         const plugins = scanPluginsDirectory();
         console.log(`Found ${plugins.length} plugins`);
@@ -213,7 +197,7 @@ Feel free to contribute new mu-plugins or improve existing ones!
         updateReadme(pluginTable);
         
         console.log('Plugin list update completed!');
-        EOF
+        ENDOFSCRIPT
 
         node scan-plugins.js
 
