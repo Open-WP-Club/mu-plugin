@@ -29,7 +29,7 @@
 |-------------|-------------|---------|------------|-------------|
 | [Add Footer Signature](mu-plugins/add-footer-signature.php) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cleanup Old Revisions](mu-plugins/cleanup-old-revisions.php) | Automatically removes old post revisions older than 30 days and limits revisions to 5 per post. | 1.0.0 | 6.6+ | 7.4+ |
-| [Cron Monitor](mu-plugins/cron-monitor.php) | Records the timestamp of the last WordPress cron execution. | 1.0.0 | 6.6+ | 7.4+ |
+| [Cron Monitor](mu-plugins/cron-monitor.php) | Records the timestamp of the last WordPress cron execution. | 1.1.0 | 6.6+ | 7.4+ |
 | [Disable Admin Email Confirmation](mu-plugins/disable-admin-email-confirmation.php) | Disables the periodic admin email confirmation prompt that WordPress shows every 6 months. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Admin New User Email](mu-plugins/disable-admin-new-user-email.php) | Prevents admin from receiving email notifications when new users register. Users still receive their welcome email. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable AI Crawlers](mu-plugins/disable-all-ai.php) | Blocks all known AI crawlers and bots from accessing your site content via robots.txt. | 1.0.0 | 6.6+ | 7.4+ |
