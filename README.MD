@@ -44,7 +44,7 @@
 | [Disable Unnecessary Link Headers](mu-plugins/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](mu-plugins/disable-wp-version.php) | Remove WordPress version | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable XML-RPC](mu-plugins/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0 | 6.6+ | 7.4+ |
-| [Enable SVG Upload](mu-plugins/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.0.0 | 6.6+ | 7.4+ |
+| [Enable SVG Upload](mu-plugins/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove Author Metabox](mu-plugins/remove-author-metabox.php) | Removes the author meta box from post and page edit screens in WordPress admin. | 1.0.0 | 6.6+ | 7.4+ |
