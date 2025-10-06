@@ -8,7 +8,7 @@
  * Description:       Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       enable-svg-upload
@@ -266,14 +266,21 @@ add_action(
   'admin_head',
   static function () {
     $screen = get_current_screen();
-    if ($screen && ($screen->base === 'upload' || $screen->base === 'post')) {
+    if ($screen && $screen->base === 'upload') {
       echo '<style>
-        img[src$=".svg"] {
-          width: 100% !important;
-          height: auto !important;
-        }
-        .media-icon img[src$=".svg"] {
+        /* Only target SVGs in media library grid view */
+        .wp-list-table .media-icon img[src$=".svg"] {
           width: 100%;
+          height: auto;
+        }
+        /* Only target SVGs in media library list view */
+        .attachments-browser .attachment img[src$=".svg"] {
+          width: 100%;
+          height: auto;
+        }
+        /* Modal attachment details */
+        .attachment-details img[src$=".svg"] {
+          max-width: 100%;
           height: auto;
         }
       </style>';
