@@ -47,10 +47,12 @@
 | [Disable XML-RPC](mu-plugins/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0 | 6.6+ | 7.4+ |
 | [Enable SVG Upload](mu-plugins/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
+| [Lazy Load Gravatars](mu-plugins/lazy-load-gravatars.php) | Defers loading of Gravatar images until they're needed, reducing initial page load time and external HTTP requests. | 1.0.0 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
 | [Optimize WooCommerce Assets](mu-plugins/optimize-woocommerce-assets.php) | Only loads WooCommerce scripts and styles on shop-related pages to improve site performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove Author Metabox](mu-plugins/remove-author-metabox.php) | Removes the author meta box from post and page edit screens in WordPress admin. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove H1 Editor](mu-plugins/disable-h1-editor.php) | Removes H1 heading option from both Classic Editor (TinyMCE) and Block Editor (Gutenberg) to improve SEO structure. | 1.0.0 | 6.6+ | 7.4+ |
+| [Remove jQuery Migrate](mu-plugins/remove-jquery-migrate.php) | Removes jQuery Migrate script from WordPress to reduce page weight. Only use if your theme and plugins don't require legacy jQuery support. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WordPress Branding](mu-plugins/remove-wordpress-branding.php) | Removes WordPress logo, admin footer text, and blocks access to WordPress about pages for white-label admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WP Embed](mu-plugins/remove-wp-embed.php) | Remove WordPress embed script from frontend to improve performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Sanitize File Name](mu-plugins/sanitize-file-names.php) | Automatically removes accents and special characters from uploaded file names for better compatibility. | 1.0.0 | 6.6+ | 7.4+ |
