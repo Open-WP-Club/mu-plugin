@@ -39,6 +39,7 @@
 | [Disable File Editing](mu-plugins/disable-file-editing.php) | Prevents editing of theme/plugin files from admin | 1.0.0 | N/A+ | N/A+ |
 | [Disable FloC](mu-plugins/disable-floc.php) | A utility plugin to disable FLoC. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Pingback](mu-plugins/disable-pingback.php) | Disables pingback XML-RPC method to prevent IP disclosure attacks behind firewalls/proxies. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Plugin Update Checks](mu-plugins/disable-plugin-update-checks.php) | Disables automatic plugin update checks to reduce server load. Useful for managed/frozen environments where updates are controlled manually. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Post by Email](mu-plugins/disable-post-by-email.php) | Disables WordPress post-by-email functionality to improve security and reduce attack surface. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Rest API](mu-plugins/disable-rest-api.php) | A utility plugin to disable Rest API. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Unnecessary Link Headers](mu-plugins/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0 | 6.6+ | 7.4+ |
