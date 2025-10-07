@@ -47,6 +47,7 @@
 | [Enable SVG Upload](mu-plugins/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
+| [Optimize WooCommerce Assets](mu-plugins/optimize-woocommerce-assets.php) | Only loads WooCommerce scripts and styles on shop-related pages to improve site performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove Author Metabox](mu-plugins/remove-author-metabox.php) | Removes the author meta box from post and page edit screens in WordPress admin. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove H1 Editor](mu-plugins/disable-h1-editor.php) | Removes H1 heading option from both Classic Editor (TinyMCE) and Block Editor (Gutenberg) to improve SEO structure. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WordPress Branding](mu-plugins/remove-wordpress-branding.php) | Removes WordPress logo, admin footer text, and blocks access to WordPress about pages for white-label admin experience. | 1.0.0 | 6.6+ | 7.4+ |
