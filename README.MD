@@ -44,11 +44,13 @@
 | [Disable Post by Email](mu-plugins/disable-post-by-email.php) | Disables WordPress post-by-email functionality to improve security and reduce attack surface. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Rest API](mu-plugins/disable-rest-api.php) | A utility plugin to disable Rest API. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Unnecessary Link Headers](mu-plugins/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable User Enumeration](mu-plugins/disable-user-enumeration.php) | Prevents user enumeration via author archives and REST API to protect usernames from discovery. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](mu-plugins/disable-wp-version.php) | Remove WordPress version | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable XML-RPC](mu-plugins/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0 | 6.6+ | 7.4+ |
 | [Enable SVG Upload](mu-plugins/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [Lazy Load Gravatars](mu-plugins/lazy-load-gravatars.php) | Defers loading of Gravatar images until they're needed, reducing initial page load time and external HTTP requests. | 1.0.0 | 6.6+ | 7.4+ |
+| [Limit Login Attempts](mu-plugins/limit-login-attempts.php) | Blocks IP addresses after 4 failed login attempts for 24 hours to prevent brute force attacks. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Upload Size by Role](mu-plugins/limit-upload-size-by-role.php) | Sets different maximum upload file size limits for different user roles to prevent large uploads from non-admin users. | 1.0.0 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
 | [Optimize WooCommerce Assets](mu-plugins/optimize-woocommerce-assets.php) | Only loads WooCommerce scripts and styles on shop-related pages to improve site performance. | 1.0.0 | 6.6+ | 7.4+ |
