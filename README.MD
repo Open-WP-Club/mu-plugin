@@ -41,6 +41,7 @@
 | [Disable Emoji Support](mu-plugins/performance/disable-emoji-support.php) | A utility plugin to disable emoji support. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable File Editing](mu-plugins/security/disable-file-editing.php) | Prevents editing of theme/plugin files from admin | 1.0.0 | N/A+ | N/A+ |
 | [Disable FloC](mu-plugins/disable/disable-floc.php) | A utility plugin to disable FLoC. | 1.0.0. | 6.6+ | 7.4+ |
+| [Disable oEmbed](mu-plugins/performance/disable-oembed.php) | Disables WordPress oEmbed functionality to reduce HTTP requests and improve performance. Use if you don't embed external content. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Pingback](mu-plugins/security/disable-pingback.php) | Disables pingback XML-RPC method to prevent IP disclosure attacks behind firewalls/proxies. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Plugin Update Checks](mu-plugins/disable/disable-plugin-update-checks.php) | Disables automatic plugin update checks to reduce server load. Useful for managed/frozen environments where updates are controlled manually. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Post by Email](mu-plugins/disable/disable-post-by-email.php) | Disables WordPress post-by-email functionality to improve security and reduce attack surface. | 1.0.0 | 6.6+ | 7.4+ |
@@ -51,6 +52,7 @@
 | [Disable WP Version](mu-plugins/disable/disable-wp-version.php) | Remove WordPress version | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable XML-RPC](mu-plugins/security/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0. | 6.6+ | 7.4+ |
 | [Enable SVG Upload](mu-plugins/media/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
+| [Environment Indicator](mu-plugins/development/environment-indicator.php) | Displays a visual indicator in the admin bar showing the current environment (Development/Staging/Production) to prevent editing the wrong site. | 1.0.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/maintenance/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [Lazy Load Gravatars](mu-plugins/performance/lazy-load-gravatars.php) | Defers loading of Gravatar images until they're needed, reducing initial page load time and external HTTP requests. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Login Attempts](mu-plugins/security/limit-login-attempts.php) | Blocks IP addresses after 4 failed login attempts for 24 hours to prevent brute force attacks. | 1.0.0 | 6.6+ | 7.4+ |
