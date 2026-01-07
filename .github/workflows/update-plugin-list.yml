@@ -3,218 +3,207 @@ name: Update Plugin List
 on:
   push:
     branches: [ main, master ]
-    paths: 
+    paths:
       - 'mu-plugins/**'
       - '.github/workflows/update-plugin-list.yml'
   pull_request:
     branches: [ main, master ]
-    paths: 
+    paths:
       - 'mu-plugins/**'
   workflow_dispatch:
 
 jobs:
   update-plugin-list:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        fetch-depth: 0
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-    - name: Create and run plugin scanner
-      run: |
-        cat << 'ENDOFSCRIPT' > scan-plugins.js
-        const fs = require('fs');
-        const path = require('path');
+      - name: Scan MU-plugins and update README
+        run: |
+          cat << 'ENDOFSCRIPT' > scan-plugins.js
+          const fs = require('fs');
+          const path = require('path');
 
-        function extractPluginInfo(filePath, content) {
-          const lines = content.split('\n');
-          const plugin = {
-            file: path.basename(filePath),
-            name: '',
-            description: '',
-            version: '',
-            requiresWP: '',
-            requiresPHP: '',
-            uri: '',
-            textDomain: ''
-          };
+          const IGNORED_FILES = new Set([
+            'index.php',
+            '000-autoloader.php'
+          ]);
 
-          let inHeader = false;
-          let headerContent = [];
-          
-          for (let line of lines) {
-            const trimmedLine = line.trim();
-            
-            if (trimmedLine.startsWith('/**')) {
-              inHeader = true;
-              continue;
+          function extractPluginInfo(filePath, content) {
+            const lines = content.split('\n');
+            const plugin = {
+              file: filePath,
+              name: '',
+              description: '',
+              version: '',
+              requiresWP: '',
+              requiresPHP: ''
+            };
+
+            let inHeader = false;
+            const headerLines = [];
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+
+              if (trimmed.startsWith('/**')) {
+                inHeader = true;
+                continue;
+              }
+
+              if (inHeader && trimmed.endsWith('*/')) {
+                break;
+              }
+
+              if (inHeader) {
+                headerLines.push(trimmed.replace(/^\*\s?/, ''));
+              }
             }
-            
-            if (trimmedLine.endsWith('*/') && inHeader) {
-              break;
+
+            const header = headerLines.join('\n');
+
+            const patterns = {
+              name: /Plugin Name:\s*(.+)$/im,
+              description: /Description:\s*(.+)$/im,
+              version: /Version:\s*(.+)$/im,
+              requiresWP: /Requires at least:\s*(.+)$/im,
+              requiresPHP: /Requires PHP:\s*(.+)$/im
+            };
+
+            for (const key in patterns) {
+              const match = header.match(patterns[key]);
+              if (match) {
+                plugin[key] = match[1].trim();
+              }
             }
-            
-            if (inHeader) {
-              headerContent.push(trimmedLine.replace(/^\*\s?/, ''));
-            }
+
+            return plugin;
           }
 
-          const headerText = headerContent.join('\n');
-          
-          const patterns = {
-            name: /Plugin name:\s*(.+?)$/im,
-            description: /Description:\s*(.+?)$/im,
-            version: /Version:\s*(.+?)\.?$/im,
-            requiresWP: /Requires at least:\s*(.+?)$/im,
-            requiresPHP: /Requires PHP:\s*(.+?)$/im,
-            uri: /Plugin URI:\s*(.+?)$/im,
-            textDomain: /Text Domain:\s*(.+?)$/im
-          };
+          function walk(dir, plugins) {
+            const entries = fs.readdirSync(dir, { withFileTypes: true });
 
-          for (const [key, pattern] of Object.entries(patterns)) {
-            const match = headerText.match(pattern);
-            if (match) {
-              plugin[key] = match[1].trim();
-            }
-          }
+            for (const entry of entries) {
+              const fullPath = path.join(dir, entry.name);
 
-          return plugin;
-        }
+              if (entry.isDirectory()) {
+                walk(fullPath, plugins);
+                continue;
+              }
 
-        function scanPluginsDirectory() {
-          const pluginsDir = path.join(process.cwd(), 'mu-plugins');
-          
-          if (!fs.existsSync(pluginsDir)) {
-            console.log('mu-plugins directory not found');
-            return [];
-          }
+              if (
+                entry.isFile() &&
+                entry.name.endsWith('.php') &&
+                !IGNORED_FILES.has(entry.name)
+              ) {
+                const content = fs.readFileSync(fullPath, 'utf8');
 
-          const plugins = [];
-          const files = fs.readdirSync(pluginsDir, { withFileTypes: true });
-
-          for (const file of files) {
-            if (file.isFile() && file.name.endsWith('.php')) {
-              const filePath = path.join(pluginsDir, file.name);
-              const content = fs.readFileSync(filePath, 'utf8');
-              
-              if (content.includes('Plugin name:') || content.includes('Plugin Name:')) {
-                const pluginInfo = extractPluginInfo(filePath, content);
-                if (pluginInfo.name) {
-                  plugins.push(pluginInfo);
+                if (
+                  content.includes('Plugin Name:') ||
+                  content.includes('Plugin name:')
+                ) {
+                  const plugin = extractPluginInfo(fullPath, content);
+                  if (plugin.name) {
+                    plugin.file = path.relative(process.cwd(), fullPath);
+                    plugins.push(plugin);
+                  }
                 }
               }
             }
           }
 
-          return plugins.sort((a, b) => a.name.localeCompare(b.name));
-        }
+          function scanPlugins() {
+            const pluginsDir = path.join(process.cwd(), 'mu-plugins');
 
-        function generateMarkdownTable(plugins) {
-          if (plugins.length === 0) {
-            return '> No mu-plugins found in the mu-plugins directory.';
+            if (!fs.existsSync(pluginsDir)) {
+              console.log('mu-plugins directory not found');
+              return [];
+            }
+
+            const plugins = [];
+            walk(pluginsDir, plugins);
+
+            return plugins.sort((a, b) =>
+              a.name.localeCompare(b.name)
+            );
           }
 
-          let markdown = '| Plugin Name | Description | Version | WP Version | PHP Version |\n';
-          markdown += '|-------------|-------------|---------|------------|-------------|\n';
+          function generateMarkdownTable(plugins) {
+            if (!plugins.length) {
+              return '> No MU plugins found.';
+            }
 
-          for (const plugin of plugins) {
-            const name = `[${plugin.name}](mu-plugins/${plugin.file})`;
-            const description = plugin.description || 'N/A';
-            const version = plugin.version || 'N/A';
-            const requiresWP = plugin.requiresWP || 'N/A';
-            const requiresPHP = plugin.requiresPHP || 'N/A';
-            
-            markdown += `| ${name} | ${description} | ${version} | ${requiresWP}+ | ${requiresPHP}+ |\n`;
+            let md = '| Plugin Name | Description | Version | WP | PHP |\n';
+            md += '|-------------|-------------|---------|----|-----|\n';
+
+            for (const p of plugins) {
+              md += `| [${p.name}](${p.file}) | ${p.description || 'N/A'} | ${p.version || 'N/A'} | ${p.requiresWP || 'N/A'}+ | ${p.requiresPHP || 'N/A'}+ |\n`;
+            }
+
+            return md;
           }
 
-          return markdown;
-        }
+          function updateReadme(table) {
+            const readmePath = path.join(process.cwd(), 'README.MD');
+            const start = '<!-- PLUGIN_LIST_START -->';
+            const end = '<!-- PLUGIN_LIST_END -->';
 
-        function updateReadme(pluginTable) {
-          const readmePath = path.join(process.cwd(), 'README.MD');
-          
-          if (!fs.existsSync(readmePath)) {
-            console.log('README.MD not found, creating new one...');
-            const newReadme = '# WordPress MU-Plugins Collection\n\n' +
-              '## Available Plugins\n\n' +
-              '<!-- PLUGIN_LIST_START -->\n' +
-              pluginTable + '\n' +
-              '<!-- PLUGIN_LIST_END -->\n\n' +
-              '## Installation\n\n' +
-              '1. Download the desired plugin files\n' +
-              '2. Upload them to your `wp-content/mu-plugins/` directory\n' +
-              '3. The plugins will be automatically activated\n\n' +
-              '## Contributing\n\n' +
-              'Feel free to contribute new mu-plugins or improve existing ones!\n';
-            
-            fs.writeFileSync(readmePath, newReadme);
-            console.log('Created new README.MD with plugin list');
-            return;
+            let content = fs.existsSync(readmePath)
+              ? fs.readFileSync(readmePath, 'utf8')
+              : '# WordPress MU-Plugins\n\n## Available Plugins\n\n' + start + '\n' + end + '\n';
+
+            if (!content.includes(start) || !content.includes(end)) {
+              content += '\n\n## Available Plugins\n\n' + start + '\n' + end + '\n';
+            }
+
+            const before = content.split(start)[0];
+            const after = content.split(end)[1];
+
+            const updated =
+              before +
+              start +
+              '\n' +
+              table +
+              '\n' +
+              end +
+              after;
+
+            fs.writeFileSync(readmePath, updated);
           }
 
-          let content = fs.readFileSync(readmePath, 'utf8');
-          
-          const startMarker = '<!-- PLUGIN_LIST_START -->';
-          const endMarker = '<!-- PLUGIN_LIST_END -->';
-          
-          const startIndex = content.indexOf(startMarker);
-          const endIndex = content.indexOf(endMarker);
-          
-          if (startIndex !== -1 && endIndex !== -1) {
-            const before = content.substring(0, startIndex + startMarker.length);
-            const after = content.substring(endIndex);
-            content = before + '\n' + pluginTable + '\n' + after;
-            
-            fs.writeFileSync(readmePath, content);
-            console.log('Updated README.MD with new plugin list');
-          } else {
-            content += '\n\n## Available Plugins\n\n' + startMarker + '\n' + pluginTable + '\n' + endMarker + '\n';
-            fs.writeFileSync(readmePath, content);
-            console.log('Added plugin list section to README.MD');
-          }
-        }
+          const plugins = scanPlugins();
+          console.log(`Found ${plugins.length} MU plugins`);
 
-        console.log('Scanning mu-plugins directory...');
-        const plugins = scanPluginsDirectory();
-        console.log(`Found ${plugins.length} plugins`);
+          updateReadme(generateMarkdownTable(plugins));
+          console.log('README updated');
+          ENDOFSCRIPT
 
-        if (plugins.length > 0) {
-          console.log('Plugins found:');
-          plugins.forEach(plugin => {
-            console.log(`  - ${plugin.name} (${plugin.version})`);
-          });
-        }
+          node scan-plugins.js
 
-        const pluginTable = generateMarkdownTable(plugins);
-        updateReadme(pluginTable);
-        
-        console.log('Plugin list update completed!');
-        ENDOFSCRIPT
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
 
-        node scan-plugins.js
-
-    - name: Check for changes
-      id: verify-changed-files
-      run: |
-        if git diff --quiet; then
-          echo "changed=false" >> $GITHUB_OUTPUT
-        else
-          echo "changed=true" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Commit and push changes
-      if: steps.verify-changed-files.outputs.changed == 'true'
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add README.MD
-        git commit -m "🤖 Update plugin list automatically" || exit 0
-        git push
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add README.MD
+          git commit -m "🤖 Update MU plugin list"
+          git push
