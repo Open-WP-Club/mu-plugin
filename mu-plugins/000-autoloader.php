@@ -33,6 +33,7 @@ class MU_Plugins_Autoloader {
         'cleanup'      => true,  // Cleanup & maintenance
         'disable'      => true,  // Feature disable plugins
         'maintenance'  => true,  // Maintenance mode & hosting
+        'development'  => true,  // Development & debugging tools
     ];
 
     /**
