@@ -35,6 +35,7 @@
 | [Disable Admin Email Confirmation](mu-plugins/admin/disable-admin-email-confirmation.php) | Disables the periodic admin email confirmation prompt that WordPress shows every 6 months. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Admin New User Email](mu-plugins/admin/disable-admin-new-user-email.php) | Prevents admin from receiving email notifications when new users register. Users still receive their welcome email. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable AI Crawlers](mu-plugins/disable/disable-all-ai.php) | Blocks all known AI crawlers and bots from accessing your site content via robots.txt. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Application Passwords](mu-plugins/security/disable-application-passwords.php) | Disables the Application Passwords feature introduced in WP 5.6 to reduce attack surface for sites not using it. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Autosave](mu-plugins/performance/disable-autosave.php) | Disables WordPress autosave functionality to improve performance and prevent unwanted draft saves. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Comments Globally](mu-plugins/disable/disable-comments.php) | Completely disables comments, trackbacks, and pingbacks across the entire site. Removes all comment-related functionality from admin. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Dashicons Frontend](mu-plugins/performance/disable-dashicons-frontend.php) | Remove Dashicons CSS from frontend for non-logged-in users to improve performance (saves ~40KB) | 1.0.0 | N/A+ | N/A+ |
@@ -64,6 +65,7 @@
 | [Remove jQuery Migrate](mu-plugins/performance/remove-jquery-migrate.php) | Removes jQuery Migrate script from WordPress to reduce page weight. Only use if your theme and plugins don't require legacy jQuery support. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WordPress Branding](mu-plugins/admin/remove-wordpress-branding.php) | Removes WordPress logo, admin footer text, and blocks access to WordPress about pages for white-label admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WP Embed](mu-plugins/performance/remove-wp-embed.php) | Remove WordPress embed script from frontend to improve performance. | 1.0.0 | 6.6+ | 7.4+ |
+| [REST API Rate Limiting](mu-plugins/security/rest-api-rate-limiting.php) | Limits REST API requests per IP to prevent abuse. 60 requests/minute for guests, 200 for authenticated users. | 1.0.0 | 6.6+ | 7.4+ |
 | [Sanitize File Name](mu-plugins/media/sanitize-file-names.php) | Automatically removes accents and special characters from uploaded file names for better compatibility. | 1.0.0 | 6.6+ | 7.4+ |
 | [Simple Maintenance Mode](mu-plugins/maintenance/simple-maintenance-mode.php) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
 
