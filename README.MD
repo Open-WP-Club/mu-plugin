@@ -27,7 +27,9 @@
 <!-- PLUGIN_LIST_START -->
 | Plugin Name | Description | Version | WP | PHP |
 |-------------|-------------|---------|----|-----|
+| [404 Logger](mu-plugins/security/404-logger.php) | Logs 404 errors to a file for security monitoring and broken link detection. | 1.0.0 | 6.6+ | 7.4+ |
 | [Add Footer Signature](mu-plugins/admin/add-footer-signature.php) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
+| [Admin Footer Info](mu-plugins/admin/admin-footer-info.php) | Shows PHP version, MySQL version, WordPress version, and memory usage in the admin footer. | 1.0.0 | 6.6+ | 7.4+ |
 | [AVIF Support](mu-plugins/media/avif-support.php) | Add AVIF image format support for uploads and display (next-generation image format, better compression than WebP) | 1.0.0 | N/A+ | N/A+ |
 | [Cleanup Old Revisions](mu-plugins/cleanup/cleanup-old-revisions.php) | Automatically removes old post revisions older than 30 days and limits revisions to 5 per post. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cron Monitor](mu-plugins/cleanup/cron-monitor.php) | Records the timestamp of the last WordPress cron execution. | 1.1.0 | 6.6+ | 7.4+ |
@@ -37,11 +39,15 @@
 | [Disable AI Crawlers](mu-plugins/disable/disable-all-ai.php) | Blocks all known AI crawlers and bots from accessing your site content via robots.txt. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Application Passwords](mu-plugins/security/disable-application-passwords.php) | Disables the Application Passwords feature introduced in WP 5.6 to reduce attack surface for sites not using it. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Autosave](mu-plugins/performance/disable-autosave.php) | Disables WordPress autosave functionality to improve performance and prevent unwanted draft saves. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Block Library CSS](mu-plugins/performance/disable-block-library-css.php) | Removes Gutenberg block library CSS from frontend if not using blocks, reducing page weight. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Block Notes](mu-plugins/disable/disable-block-notes.php) | Disables the collaboration notes feature in the block editor introduced in WordPress 6.9. | 1.0.0 | 6.9+ | 7.4+ |
+| [Disable Command Palette](mu-plugins/disable/disable-command-palette.php) | Disables the Command Palette (Ctrl+K / Cmd+K) feature in the WordPress admin. | 1.0.0 | 6.3+ | 7.4+ |
 | [Disable Comments Globally](mu-plugins/disable/disable-comments.php) | Completely disables comments, trackbacks, and pingbacks across the entire site. Removes all comment-related functionality from admin. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Dashicons Frontend](mu-plugins/performance/disable-dashicons-frontend.php) | Remove Dashicons CSS from frontend for non-logged-in users to improve performance (saves ~40KB) | 1.0.0 | N/A+ | N/A+ |
 | [Disable Emoji Support](mu-plugins/performance/disable-emoji-support.php) | A utility plugin to disable emoji support. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable File Editing](mu-plugins/security/disable-file-editing.php) | Prevents editing of theme/plugin files from admin | 1.0.0 | N/A+ | N/A+ |
 | [Disable FloC](mu-plugins/disable/disable-floc.php) | A utility plugin to disable FLoC. | 1.0.0. | 6.6+ | 7.4+ |
+| [Disable Heartbeat API](mu-plugins/performance/disable-heartbeat-api.php) | Disables or limits the Heartbeat API to reduce server load. Keeps it active only in the post editor where it's needed. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable oEmbed](mu-plugins/performance/disable-oembed.php) | Disables WordPress oEmbed functionality to reduce HTTP requests and improve performance. Use if you don't embed external content. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Pingback](mu-plugins/security/disable-pingback.php) | Disables pingback XML-RPC method to prevent IP disclosure attacks behind firewalls/proxies. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Plugin Update Checks](mu-plugins/disable/disable-plugin-update-checks.php) | Disables automatic plugin update checks to reduce server load. Useful for managed/frozen environments where updates are controlled manually. | 1.0.0 | 6.6+ | 7.4+ |
@@ -50,6 +56,7 @@
 | [Disable Unnecessary Link Headers](mu-plugins/disable/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable User Enumeration](mu-plugins/security/disable-user-enumeration.php) | Prevents user enumeration via author archives and REST API to protect usernames from discovery. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable User Registration](mu-plugins/security/disable-user-registration.php) | Completely disables user registration via wp-login.php, REST API, and all registration endpoints | 1.0.0 | N/A+ | N/A+ |
+| [Disable Welcome Panel](mu-plugins/admin/disable-welcome-panel.php) | Removes the welcome panel from the WordPress dashboard for a cleaner admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](mu-plugins/disable/disable-wp-version.php) | Remove WordPress version | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable XML-RPC](mu-plugins/security/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0. | 6.6+ | 7.4+ |
 | [Enable SVG Upload](mu-plugins/media/enable-svg-upload.php) | Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support. | 1.1.0 | 6.6+ | 7.4+ |
@@ -57,6 +64,7 @@
 | [Hosting Disallowed Plugins](mu-plugins/maintenance/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.0.1 | 6.6+ | 7.4+ |
 | [Lazy Load Gravatars](mu-plugins/performance/lazy-load-gravatars.php) | Defers loading of Gravatar images until they're needed, reducing initial page load time and external HTTP requests. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Login Attempts](mu-plugins/security/limit-login-attempts.php) | Blocks IP addresses after 4 failed login attempts for 24 hours to prevent brute force attacks. | 1.0.0 | 6.6+ | 7.4+ |
+| [Limit Post Revisions](mu-plugins/performance/limit-post-revisions.php) | Limits the number of post revisions stored in the database to reduce bloat and improve performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Upload Size by Role](mu-plugins/media/limit-upload-size-by-role.php) | Sets different maximum upload file size limits for different user roles to prevent large uploads from non-admin users. | 1.0.0 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/admin/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
 | [Optimize WooCommerce Assets](mu-plugins/performance/optimize-woocommerce-assets.php) | Only loads WooCommerce scripts and styles on shop-related pages to improve site performance. | 1.0.0 | 6.6+ | 7.4+ |
@@ -66,6 +74,7 @@
 | [Remove WordPress Branding](mu-plugins/admin/remove-wordpress-branding.php) | Removes WordPress logo, admin footer text, and blocks access to WordPress about pages for white-label admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WP Embed](mu-plugins/performance/remove-wp-embed.php) | Remove WordPress embed script from frontend to improve performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [REST API Rate Limiting](mu-plugins/security/rest-api-rate-limiting.php) | Limits REST API requests per IP to prevent abuse. 60 requests/minute for guests, 200 for authenticated users. | 1.0.0 | 6.6+ | 7.4+ |
+| [Restrict REST API Blocks](mu-plugins/security/restrict-rest-api-blocks.php) | Limits access to block-related REST API endpoints to authenticated users only. | 1.0.0 | 6.6+ | 7.4+ |
 | [Sanitize File Name](mu-plugins/media/sanitize-file-names.php) | Automatically removes accents and special characters from uploaded file names for better compatibility. | 1.0.0 | 6.6+ | 7.4+ |
 | [Simple Maintenance Mode](mu-plugins/maintenance/simple-maintenance-mode.php) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
 
