@@ -19,10 +19,16 @@
 
 ## Installation Instructions
 
-1. **Create the directory**: `/wp-content/mu-plugins/` (if it doesn't exist)
-2. **Upload individual files**: Copy only the `.php` files you need
-3. **No activation needed**: They work immediately
-4. **Verify functionality**: Test your site after adding each plugin
+**Zero configuration required** - the autoloader loads ALL PHP files from ALL subdirectories. Simply delete any plugins or folders you don't need.
+
+## How It Works
+
+1. The autoloader scans all subdirectories
+2. Loads every `.php` file it finds
+3. No configuration needed
+
+**Don't want a plugin?** Delete it.
+**Don't want a category?** Delete the folder.
 
 <!-- PLUGIN_LIST_START -->
 | Plugin Name | Description | Version | WP | PHP |
