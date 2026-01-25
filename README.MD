@@ -77,6 +77,7 @@
 | [Remove Author Metabox](mu-plugins/admin/remove-author-metabox.php) | Removes the author meta box from post and page edit screens in WordPress admin. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove H1 Editor](mu-plugins/admin/disable-h1-editor.php) | Removes H1 heading option from both Classic Editor (TinyMCE) and Block Editor (Gutenberg) to improve SEO structure. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove jQuery Migrate](mu-plugins/performance/remove-jquery-migrate.php) | Removes jQuery Migrate script from WordPress to reduce page weight. Only use if your theme and plugins don't require legacy jQuery support. | 1.0.0 | 6.6+ | 7.4+ |
+| [Remove Plugin Bloat](mu-plugins/admin/remove-plugin-bloat.php) | Removes admin bar items and source code footprints from popular plugins like WP Rocket, Redis Cache, etc. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WordPress Branding](mu-plugins/admin/remove-wordpress-branding.php) | Removes WordPress logo, admin footer text, and blocks access to WordPress about pages for white-label admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Remove WP Embed](mu-plugins/performance/remove-wp-embed.php) | Remove WordPress embed script from frontend to improve performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [REST API Rate Limiting](mu-plugins/security/rest-api-rate-limiting.php) | Limits REST API requests per IP to prevent abuse. 60 requests/minute for guests, 200 for authenticated users. | 1.0.0 | 6.6+ | 7.4+ |
