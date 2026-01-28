@@ -8,7 +8,7 @@
  * Description:       Provides a simplified "Store Manager" view for WooCommerce users. Toggle between full WordPress admin and a decluttered, WooCommerce-focused interface via the admin bar.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       woo-store-manager
@@ -362,24 +362,15 @@ class MU_Store_Manager_Mode
     {
         $user = wp_get_current_user();
         ?>
-        <div class="mu-store-welcome">
+        <div class="mu-center">
             <h3><?php printf(__('Welcome back, %s!', 'woo-store-manager'), esc_html($user->display_name)); ?></h3>
-            <p class="mu-store-date"><?php echo esc_html(date_i18n(get_option('date_format') . ' - ' . get_option('time_format'))); ?></p>
-
-            <div class="mu-quick-actions">
-                <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="button button-primary">
-                    <?php esc_html_e('Add Product', 'woo-store-manager'); ?>
-                </a>
-                <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order')); ?>" class="button">
-                    <?php esc_html_e('View Orders', 'woo-store-manager'); ?>
-                </a>
-                <a href="<?php echo esc_url(admin_url('users.php?role=customer')); ?>" class="button">
-                    <?php esc_html_e('Customers', 'woo-store-manager'); ?>
-                </a>
-                <a href="<?php echo esc_url(admin_url('admin.php?page=wc-reports')); ?>" class="button">
-                    <?php esc_html_e('Reports', 'woo-store-manager'); ?>
-                </a>
-            </div>
+            <p class="description"><?php echo esc_html(date_i18n(get_option('date_format') . ' - ' . get_option('time_format'))); ?></p>
+            <p class="mu-flex">
+                <a href="<?php echo esc_url(admin_url('post-new.php?post_type=product')); ?>" class="button button-primary"><?php esc_html_e('Add Product', 'woo-store-manager'); ?></a>
+                <a href="<?php echo esc_url(admin_url('edit.php?post_type=shop_order')); ?>" class="button"><?php esc_html_e('View Orders', 'woo-store-manager'); ?></a>
+                <a href="<?php echo esc_url(admin_url('users.php?role=customer')); ?>" class="button"><?php esc_html_e('Customers', 'woo-store-manager'); ?></a>
+                <a href="<?php echo esc_url(admin_url('admin.php?page=wc-reports')); ?>" class="button"><?php esc_html_e('Reports', 'woo-store-manager'); ?></a>
+            </p>
         </div>
         <?php
     }
@@ -389,40 +380,19 @@ class MU_Store_Manager_Mode
      */
     public static function render_stats_widget()
     {
-        $orders_today = wc_orders_count('processing') + wc_orders_count('on-hold');
-
-        $product_count = wp_count_posts('product');
-        $published_products = $product_count->publish ?? 0;
-
-        $low_stock_count = self::get_low_stock_count();
-        $revenue_today = self::get_todays_revenue();
-
-        $user_counts = count_users();
-        $customer_count = $user_counts['avail_roles']['customer'] ?? 0;
-
+        $orders_pending = wc_orders_count('processing') + wc_orders_count('on-hold');
+        $products = wp_count_posts('product')->publish ?? 0;
+        $low_stock = self::get_low_stock_count();
+        $revenue = self::get_todays_revenue();
+        $customers = count_users()['avail_roles']['customer'] ?? 0;
         ?>
-        <div class="mu-store-stats">
-            <div class="mu-stat-box">
-                <span class="mu-stat-number"><?php echo esc_html($orders_today); ?></span>
-                <span class="mu-stat-label"><?php esc_html_e('Pending Orders', 'woo-store-manager'); ?></span>
-            </div>
-            <div class="mu-stat-box">
-                <span class="mu-stat-number"><?php echo esc_html($published_products); ?></span>
-                <span class="mu-stat-label"><?php esc_html_e('Products', 'woo-store-manager'); ?></span>
-            </div>
-            <div class="mu-stat-box mu-stat-customers">
-                <span class="mu-stat-number"><?php echo esc_html($customer_count); ?></span>
-                <span class="mu-stat-label"><?php esc_html_e('Customers', 'woo-store-manager'); ?></span>
-            </div>
-            <div class="mu-stat-box <?php echo $low_stock_count > 0 ? 'mu-stat-warning' : ''; ?>">
-                <span class="mu-stat-number"><?php echo esc_html($low_stock_count); ?></span>
-                <span class="mu-stat-label"><?php esc_html_e('Low Stock', 'woo-store-manager'); ?></span>
-            </div>
-            <?php if ($revenue_today !== null) : ?>
-            <div class="mu-stat-box mu-stat-revenue">
-                <span class="mu-stat-number"><?php echo wc_price($revenue_today); ?></span>
-                <span class="mu-stat-label"><?php esc_html_e("Today's Revenue", 'woo-store-manager'); ?></span>
-            </div>
+        <div class="mu-grid">
+            <div class="mu-stat"><strong><?php echo esc_html($orders_pending); ?></strong><small><?php esc_html_e('Pending', 'woo-store-manager'); ?></small></div>
+            <div class="mu-stat"><strong><?php echo esc_html($products); ?></strong><small><?php esc_html_e('Products', 'woo-store-manager'); ?></small></div>
+            <div class="mu-stat info"><strong><?php echo esc_html($customers); ?></strong><small><?php esc_html_e('Customers', 'woo-store-manager'); ?></small></div>
+            <div class="mu-stat <?php echo $low_stock > 0 ? 'warning' : ''; ?>"><strong><?php echo esc_html($low_stock); ?></strong><small><?php esc_html_e('Low Stock', 'woo-store-manager'); ?></small></div>
+            <?php if ($revenue !== null) : ?>
+            <div class="mu-stat success"><strong><?php echo wc_price($revenue); ?></strong><small><?php esc_html_e('Today', 'woo-store-manager'); ?></small></div>
             <?php endif; ?>
         </div>
         <?php
@@ -433,19 +403,14 @@ class MU_Store_Manager_Mode
      */
     public static function render_recent_orders_widget()
     {
-        $orders = wc_get_orders([
-            'limit'   => 5,
-            'orderby' => 'date',
-            'order'   => 'DESC',
-        ]);
+        $orders = wc_get_orders(['limit' => 5, 'orderby' => 'date', 'order' => 'DESC']);
 
         if (empty($orders)) {
             echo '<p>' . esc_html__('No orders yet.', 'woo-store-manager') . '</p>';
             return;
         }
 
-        echo '<table class="mu-orders-table widefat">';
-        echo '<thead><tr>';
+        echo '<table class="widefat striped"><thead><tr>';
         echo '<th>' . esc_html__('Order', 'woo-store-manager') . '</th>';
         echo '<th>' . esc_html__('Customer', 'woo-store-manager') . '</th>';
         echo '<th>' . esc_html__('Status', 'woo-store-manager') . '</th>';
@@ -453,22 +418,17 @@ class MU_Store_Manager_Mode
         echo '</tr></thead><tbody>';
 
         foreach ($orders as $order) {
-            $order_url = $order->get_edit_order_url();
-            $customer_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
-            if (trim($customer_name) === '') {
-                $customer_name = __('Guest', 'woo-store-manager');
-            }
-
+            $name = trim($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()) ?: __('Guest', 'woo-store-manager');
             echo '<tr>';
-            echo '<td><a href="' . esc_url($order_url) . '">#' . esc_html($order->get_order_number()) . '</a></td>';
-            echo '<td>' . esc_html($customer_name) . '</td>';
-            echo '<td><span class="order-status status-' . esc_attr($order->get_status()) . '">' . esc_html(wc_get_order_status_name($order->get_status())) . '</span></td>';
+            echo '<td><a href="' . esc_url($order->get_edit_order_url()) . '">#' . esc_html($order->get_order_number()) . '</a></td>';
+            echo '<td>' . esc_html($name) . '</td>';
+            echo '<td><mark class="order-status status-' . esc_attr($order->get_status()) . '"><span>' . esc_html(wc_get_order_status_name($order->get_status())) . '</span></mark></td>';
             echo '<td>' . wp_kses_post($order->get_formatted_order_total()) . '</td>';
             echo '</tr>';
         }
 
         echo '</tbody></table>';
-        echo '<p class="mu-view-all"><a href="' . esc_url(admin_url('edit.php?post_type=shop_order')) . '">' . esc_html__('View all orders', 'woo-store-manager') . ' &rarr;</a></p>';
+        echo '<p class="mu-between"><span></span><a href="' . esc_url(admin_url('edit.php?post_type=shop_order')) . '">' . esc_html__('View all', 'woo-store-manager') . ' &rarr;</a></p>';
     }
 
     /**
@@ -499,20 +459,17 @@ class MU_Store_Manager_Mode
         $all_products = array_merge($products, $out_of_stock);
 
         if (empty($all_products)) {
-            echo '<p class="mu-all-good">' . esc_html__('All products are well stocked!', 'woo-store-manager') . '</p>';
+            echo '<p class="mu-center" style="color:#00a32a">' . esc_html__('All products are well stocked!', 'woo-store-manager') . '</p>';
             return;
         }
 
-        echo '<ul class="mu-low-stock-list">';
+        echo '<ul class="mu-list">';
         foreach (array_slice($all_products, 0, 5) as $product) {
-            $stock_qty = $product->get_stock_quantity();
-            $status_class = $stock_qty <= 0 ? 'out-of-stock' : 'low-stock';
-            $status_text = $stock_qty <= 0 ? __('Out of stock', 'woo-store-manager') : sprintf(__('%d left', 'woo-store-manager'), $stock_qty);
-
-            echo '<li class="' . esc_attr($status_class) . '">';
-            echo '<a href="' . esc_url(get_edit_post_link($product->get_id())) . '">' . esc_html($product->get_name()) . '</a>';
-            echo '<span class="stock-status">' . esc_html($status_text) . '</span>';
-            echo '</li>';
+            $qty = $product->get_stock_quantity();
+            $badge = $qty <= 0
+                ? '<mark class="order-status status-on-hold"><span>' . esc_html__('Out of stock', 'woo-store-manager') . '</span></mark>'
+                : '<mark class="order-status status-processing"><span>' . sprintf(esc_html__('%d left', 'woo-store-manager'), $qty) . '</span></mark>';
+            echo '<li><a href="' . esc_url(get_edit_post_link($product->get_id())) . '">' . esc_html($product->get_name()) . '</a>' . $badge . '</li>';
         }
         echo '</ul>';
     }
@@ -522,53 +479,31 @@ class MU_Store_Manager_Mode
      */
     public static function render_customers_widget()
     {
-        $customer_query = new WP_User_Query([
-            'role'    => 'customer',
-            'number'  => 5,
-            'orderby' => 'registered',
-            'order'   => 'DESC',
-        ]);
-
-        $customers = $customer_query->get_results();
+        $customers = get_users(['role' => 'customer', 'number' => 5, 'orderby' => 'registered', 'order' => 'DESC']);
 
         if (empty($customers)) {
             echo '<p>' . esc_html__('No customers yet.', 'woo-store-manager') . '</p>';
             return;
         }
 
-        echo '<table class="mu-customers-table widefat">';
-        echo '<thead><tr>';
+        echo '<table class="widefat striped"><thead><tr>';
         echo '<th>' . esc_html__('Customer', 'woo-store-manager') . '</th>';
-        echo '<th>' . esc_html__('Email', 'woo-store-manager') . '</th>';
         echo '<th>' . esc_html__('Orders', 'woo-store-manager') . '</th>';
         echo '<th>' . esc_html__('Spent', 'woo-store-manager') . '</th>';
         echo '</tr></thead><tbody>';
 
         foreach ($customers as $customer) {
-            $wc_customer = new WC_Customer($customer->ID);
-            $order_count = $wc_customer->get_order_count();
-            $total_spent = $wc_customer->get_total_spent();
-
+            $wc = new WC_Customer($customer->ID);
             echo '<tr>';
-            echo '<td class="mu-customer-cell">';
-            echo get_avatar($customer->ID, 24, '', '', ['class' => 'mu-customer-avatar']);
-            echo '<a href="' . esc_url(get_edit_user_link($customer->ID)) . '">' . esc_html($customer->display_name) . '</a>';
-            echo '</td>';
-            echo '<td><a href="mailto:' . esc_attr($customer->user_email) . '">' . esc_html($customer->user_email) . '</a></td>';
-            echo '<td>' . esc_html($order_count) . '</td>';
-            echo '<td>' . wp_kses_post(wc_price($total_spent)) . '</td>';
+            echo '<td>' . get_avatar($customer->ID, 20, '', '', ['class' => 'mu-avatar']) . '<a href="' . esc_url(get_edit_user_link($customer->ID)) . '">' . esc_html($customer->display_name) . '</a></td>';
+            echo '<td>' . esc_html($wc->get_order_count()) . '</td>';
+            echo '<td>' . wp_kses_post(wc_price($wc->get_total_spent())) . '</td>';
             echo '</tr>';
         }
 
         echo '</tbody></table>';
-
-        $total_customers = count_users();
-        $customer_count = $total_customers['avail_roles']['customer'] ?? 0;
-
-        echo '<p class="mu-view-all">';
-        echo '<span class="mu-customer-count">' . sprintf(esc_html__('%d total customers', 'woo-store-manager'), $customer_count) . '</span>';
-        echo '<a href="' . esc_url(admin_url('users.php?role=customer')) . '">' . esc_html__('View all', 'woo-store-manager') . ' &rarr;</a>';
-        echo '</p>';
+        $total = count_users()['avail_roles']['customer'] ?? 0;
+        echo '<p class="mu-between"><span class="description">' . sprintf(esc_html__('%d total', 'woo-store-manager'), $total) . '</span><a href="' . esc_url(admin_url('users.php?role=customer')) . '">' . esc_html__('View all', 'woo-store-manager') . ' &rarr;</a></p>';
     }
 
     /**
@@ -670,202 +605,37 @@ class MU_Store_Manager_Mode
     {
         ?>
         <style>
-            /* Store Manager Dashboard Styles */
-            .mu-store-welcome {
-                text-align: center;
-                padding: 20px;
-            }
-            .mu-store-welcome h3 {
-                margin: 0 0 5px;
-                font-size: 1.4em;
-            }
-            .mu-store-date {
-                color: #646970;
-                margin-bottom: 20px;
-            }
-            .mu-quick-actions {
-                display: flex;
-                gap: 10px;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            .mu-quick-actions .button {
-                min-width: 120px;
-            }
+            /* Layout helpers */
+            .mu-center { text-align: center; }
+            .mu-flex { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+            .mu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; }
+            .mu-between { display: flex; justify-content: space-between; align-items: center; }
 
-            /* Stats Widget */
-            .mu-store-stats {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 15px;
-            }
-            .mu-stat-box {
-                text-align: center;
-                padding: 15px;
-                background: #f6f7f7;
-                border-radius: 4px;
-            }
-            .mu-stat-number {
-                display: block;
-                font-size: 2em;
-                font-weight: 600;
-                color: #1d2327;
-            }
-            .mu-stat-label {
-                display: block;
-                font-size: 0.85em;
-                color: #646970;
-                margin-top: 5px;
-            }
-            .mu-stat-warning {
-                background: #fcf0f1;
-            }
-            .mu-stat-warning .mu-stat-number {
-                color: #d63638;
-            }
-            .mu-stat-revenue {
-                background: #edfaef;
-            }
-            .mu-stat-revenue .mu-stat-number {
-                color: #00a32a;
-            }
-            .mu-stat-customers {
-                background: #f0f6fc;
-            }
-            .mu-stat-customers .mu-stat-number {
-                color: #2271b1;
-            }
+            /* Stats use WP card style */
+            .mu-stat { text-align: center; padding: 12px; background: #f6f7f7; border-radius: 4px; }
+            .mu-stat strong { display: block; font-size: 1.8em; }
+            .mu-stat.warning { background: #fcf0f1; }
+            .mu-stat.warning strong { color: #d63638; }
+            .mu-stat.success strong { color: #00a32a; }
+            .mu-stat.info strong { color: #2271b1; }
 
-            /* Orders Table */
-            .mu-orders-table {
-                margin: 0;
-            }
-            .mu-orders-table th,
-            .mu-orders-table td {
-                padding: 8px 10px;
-            }
-            .mu-orders-table .order-status {
-                display: inline-block;
-                padding: 2px 8px;
-                border-radius: 3px;
-                font-size: 0.85em;
-            }
-            .mu-orders-table .status-processing {
-                background: #c6e1c6;
-                color: #5b841b;
-            }
-            .mu-orders-table .status-on-hold {
-                background: #f8dda7;
-                color: #94660c;
-            }
-            .mu-orders-table .status-pending {
-                background: #e5e5e5;
-                color: #646970;
-            }
-            .mu-orders-table .status-completed {
-                background: #c8d7e1;
-                color: #2e4453;
-            }
-            .mu-view-all {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 10px 0 0;
-            }
-            .mu-customer-count {
-                color: #646970;
-                font-size: 0.9em;
-            }
+            /* Tables - extend WP .widefat */
+            .widefat td, .widefat th { padding: 8px 10px; }
+            .mu-avatar { border-radius: 50%; vertical-align: middle; margin-right: 6px; }
 
-            /* Customers Table */
-            .mu-customers-table {
-                margin: 0;
-            }
-            .mu-customers-table th,
-            .mu-customers-table td {
-                padding: 8px 10px;
-                vertical-align: middle;
-            }
-            .mu-customer-cell {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .mu-customer-avatar {
-                border-radius: 50%;
-            }
+            /* Lists */
+            .mu-list { margin: 0; padding: 0; list-style: none; }
+            .mu-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f1; }
+            .mu-list li:last-child { border-bottom: none; }
 
-            /* Low Stock List */
-            .mu-low-stock-list {
-                margin: 0;
-                padding: 0;
-                list-style: none;
-            }
-            .mu-low-stock-list li {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid #f0f0f1;
-            }
-            .mu-low-stock-list li:last-child {
-                border-bottom: none;
-            }
-            .mu-low-stock-list .stock-status {
-                font-size: 0.85em;
-                padding: 2px 8px;
-                border-radius: 3px;
-            }
-            .mu-low-stock-list .low-stock .stock-status {
-                background: #f8dda7;
-                color: #94660c;
-            }
-            .mu-low-stock-list .out-of-stock .stock-status {
-                background: #fcf0f1;
-                color: #d63638;
-            }
-            .mu-all-good {
-                text-align: center;
-                color: #00a32a;
-                padding: 20px;
-            }
-
-            /* Store Manager Mode - Cleaner Admin */
-            body.store-manager-mode #adminmenu {
-                background: linear-gradient(180deg, #1d2327 0%, #2c3338 100%);
-            }
-            body.store-manager-mode #adminmenu li.wp-menu-separator {
-                background: #3c434a;
-            }
-
-            /* Lock widget positions - disable drag and drop */
-            body.store-manager-mode .postbox .hndle {
-                cursor: default;
-            }
-            body.store-manager-mode .postbox .hndle:hover {
-                cursor: default;
-            }
-            body.store-manager-mode .meta-box-sortables {
-                pointer-events: auto;
-            }
-            body.store-manager-mode .meta-box-sortables .postbox {
-                pointer-events: auto;
-            }
-            body.store-manager-mode #dashboard-widgets .meta-box-sortables {
-                min-height: 0 !important;
-            }
+            /* Lock widgets */
+            body.store-manager-mode .postbox .hndle { cursor: default; }
             body.store-manager-mode .postbox .handlediv,
             body.store-manager-mode .postbox .handle-order-higher,
-            body.store-manager-mode .postbox .handle-order-lower {
-                display: none !important;
-            }
-            body.store-manager-mode #screen-options-link-wrap {
-                display: none;
-            }
+            body.store-manager-mode .postbox .handle-order-lower,
+            body.store-manager-mode #screen-options-link-wrap { display: none !important; }
         </style>
-        <script>
-            document.body.classList.add('store-manager-mode');
-        </script>
+        <script>document.body.classList.add('store-manager-mode');</script>
         <?php
     }
 
