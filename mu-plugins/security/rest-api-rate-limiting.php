@@ -8,7 +8,7 @@
  * Description:       Limits REST API requests per IP to prevent abuse. 60 requests/minute for guests, 200 for authenticated users.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       rest-api-rate-limiting
@@ -210,11 +210,11 @@ add_action(
             return;
         }
 
-        echo '<div class="notice notice-info is-dismissible" id="rate-limit-notice">
+        echo '<div class="notice notice-info is-dismissible" id="rate-limit-notice" data-nonce="' . esc_attr(wp_create_nonce('rate_limit_nonce')) . '">
             <p>
                 <strong>REST API Rate Limiting Active:</strong>
-                ' . MU_RATE_LIMIT_GUEST . ' requests/minute for guests,
-                ' . MU_RATE_LIMIT_AUTHENTICATED . ' for authenticated users.
+                ' . (int) MU_RATE_LIMIT_GUEST . ' requests/minute for guests,
+                ' . (int) MU_RATE_LIMIT_AUTHENTICATED . ' for authenticated users.
             </p>
         </div>';
 
@@ -227,7 +227,7 @@ add_action(
                             fetch(ajaxurl, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                                body: "action=dismiss_rate_limit_notice&nonce=' . wp_create_nonce('rate_limit_nonce') . '"
+                                body: "action=dismiss_rate_limit_notice&nonce=" + notice.dataset.nonce
                             });
                         }
                     });

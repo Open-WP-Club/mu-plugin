@@ -8,7 +8,7 @@
  * Description:       Removes H1 heading option from both Classic Editor (TinyMCE) and Block Editor (Gutenberg) to improve SEO structure.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       remove-h1-editor
@@ -125,7 +125,7 @@ function mu_h1_removal_admin_notice()
   }
 
 ?>
-  <div class="notice notice-info is-dismissible" id="h1-removal-notice">
+  <div class="notice notice-info is-dismissible" id="h1-removal-notice" data-nonce="<?php echo esc_attr(wp_create_nonce('h1_removal_nonce')); ?>">
     <p>
       <strong>H1 headings have been removed from the editor.</strong>
       This improves SEO by ensuring your page/post title remains the only H1.
@@ -141,10 +141,8 @@ function mu_h1_removal_admin_notice()
           if (e.target.classList.contains('notice-dismiss')) {
             fetch(ajaxurl, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              body: 'action=dismiss_h1_removal_notice&nonce=<?php echo wp_create_nonce('h1_removal_nonce'); ?>'
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: 'action=dismiss_h1_removal_notice&nonce=' + notice.dataset.nonce
             });
           }
         });

@@ -8,7 +8,7 @@
  * Description:       Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.1
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       hosting-disallowed-plugins
@@ -56,23 +56,6 @@ const HOSTING_DISALLOWED_PLUGINS = [
   'duplicator',
   'duplicator-pro',
   'ezpz-one-click-backup',
-  'the-codetree-backup',
-  'wp-db-backup',
-  'wp-db-backup-made',
-  'wpengine-migrate',
-  'wpengine-snapshot',
-  'wponlinebackup',
-  'all-in-one-wp-migration',
-  'snapshot',
-  'versionpress',
-  'backupcreator',
-  'backup-to-dropbox',
-  'backupwp',
-  'simple-backup',
-  'total-archive-by-fotan',
-  'wp-complete-backup',
-  'wp-time-machine',
-  'xcloner-backup-and-restore',
   'the-codetree-backup',
   'wp-db-backup',
   'wp-db-backup-made',
