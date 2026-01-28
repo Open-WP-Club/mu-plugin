@@ -84,6 +84,6 @@
 | [Restrict REST API Blocks](mu-plugins/security/restrict-rest-api-blocks.php) | Limits access to block-related REST API endpoints to authenticated users only. | 1.0.0 | 6.6+ | 7.4+ |
 | [Sanitize File Name](mu-plugins/media/sanitize-file-names.php) | Automatically removes accents and special characters from uploaded file names for better compatibility. | 1.0.0 | 6.6+ | 7.4+ |
 | [Simple Maintenance Mode](mu-plugins/maintenance/simple-maintenance-mode.php) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
-| [WooCommerce Store Manager Mode](mu-plugins/woocommerce/store-manager.php) | Provides a simplified "Store Manager" view for WooCommerce users. Toggle between full WordPress admin and a decluttered, WooCommerce-focused interface via the admin bar. | 1.0.0 | 6.6+ | 7.4+ |
+| [WooCommerce Store Manager Mode](mu-plugins/woocommerce/store-manager.php) | Provides a simplified "Store Manager" view for WooCommerce users. Toggle between full WordPress admin and a decluttered, WooCommerce-focused interface via the admin bar. | 1.1.0 | 6.6+ | 7.4+ |
 
 <!-- PLUGIN_LIST_END -->
