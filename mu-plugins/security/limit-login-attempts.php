@@ -22,26 +22,22 @@ define('MU_LOGIN_ATTEMPTS_MAX', 4);
 define('MU_LOGIN_LOCKOUT_DURATION', 24 * HOUR_IN_SECONDS); // 24 hours
 
 /**
- * Get the user's IP address
+ * Get the user's IP address.
+ *
+ * Defaults to REMOTE_ADDR to prevent spoofing via forged headers.
+ * Sites behind a trusted reverse proxy (Cloudflare, nginx) can override
+ * via the 'mu_get_user_ip' filter, e.g.:
+ *   add_filter('mu_get_user_ip', fn() => $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR']);
  */
 function mu_get_user_ip()
 {
-  $ip = '';
+  $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 
-  // Check for shared internet/ISP IP
-  if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-    $ip = $_SERVER['HTTP_CLIENT_IP'];
-  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-    // Check for IP passed from proxy
-    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-  } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
-    $ip = $_SERVER['REMOTE_ADDR'];
-  }
+  $ip = apply_filters('mu_get_user_ip', $ip);
 
-  // Validate and sanitize IP
-  $ip = filter_var($ip, FILTER_VALIDATE_IP);
+  $ip = filter_var(trim($ip), FILTER_VALIDATE_IP);
 
-  return $ip ? $ip : '0.0.0.0';
+  return $ip ?: '0.0.0.0';
 }
 
 /**

@@ -98,15 +98,6 @@ add_filter(
       $ai_rules[] = ''; // Empty line for readability
     }
 
-    // Add general AI bot patterns
-    $ai_rules[] = '# Generic AI bot patterns';
-    $ai_rules[] = 'User-agent: *AI*';
-    $ai_rules[] = 'Disallow: /';
-    $ai_rules[] = '';
-    $ai_rules[] = 'User-agent: *bot*AI*';
-    $ai_rules[] = 'Disallow: /';
-    $ai_rules[] = '';
-
     return implode("\n", $ai_rules) . $output;
   },
   -1,

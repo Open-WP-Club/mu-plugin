@@ -37,32 +37,20 @@ function mu_rate_limit_get_whitelist()
 }
 
 /**
- * Get client IP address with proxy support
+ * Get client IP address.
+ *
+ * Defaults to REMOTE_ADDR to prevent spoofing via forged headers.
+ * Sites behind a trusted reverse proxy (Cloudflare, nginx) can override
+ * via the 'mu_rate_limit_get_ip' filter, e.g.:
+ *   add_filter('mu_rate_limit_get_ip', fn() => $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR']);
  */
 function mu_rate_limit_get_ip()
 {
-    $ip = '';
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
 
-    // Check common proxy headers
-    $headers = [
-        'HTTP_CF_CONNECTING_IP',  // Cloudflare
-        'HTTP_X_REAL_IP',         // Nginx proxy
-        'HTTP_X_FORWARDED_FOR',   // Standard proxy
-        'HTTP_CLIENT_IP',         // Shared internet
-        'REMOTE_ADDR',            // Direct connection
-    ];
+    $ip = apply_filters('mu_rate_limit_get_ip', $ip);
 
-    foreach ($headers as $header) {
-        if (!empty($_SERVER[$header])) {
-            // X-Forwarded-For can contain multiple IPs, get the first one
-            $ip = explode(',', $_SERVER[$header])[0];
-            $ip = trim($ip);
-            break;
-        }
-    }
-
-    // Validate IP
-    $ip = filter_var($ip, FILTER_VALIDATE_IP);
+    $ip = filter_var(trim($ip), FILTER_VALIDATE_IP);
 
     return $ip ?: '0.0.0.0';
 }
