@@ -36,7 +36,9 @@
 | [404 Logger](mu-plugins/security/404-logger.php) | Logs 404 errors to a file for security monitoring and broken link detection. | 1.0.0 | 6.6+ | 7.4+ |
 | [Add Footer Signature](mu-plugins/admin/add-footer-signature.php) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
 | [Admin Footer Info](mu-plugins/admin/admin-footer-info.php) | Shows PHP version, MySQL version, WordPress version, and memory usage in the admin footer. | 1.0.0 | 6.6+ | 7.4+ |
+| [Admin Session Timeout](mu-plugins/security/admin-session-timeout.php) | Automatically logs out inactive admin users. Default timeout is 60 minutes. Override with the 'mu_session_timeout' filter (value in seconds). | 1.0.0 | 6.6+ | 7.4+ |
 | [AVIF Support](mu-plugins/media/avif-support.php) | Add AVIF image format support for uploads and display (next-generation image format, better compression than WebP) | 1.0.0 | N/A+ | N/A+ |
+| [Clean Head Output](mu-plugins/performance/clean-head-output.php) | Removes unnecessary tags from the frontend <head>: wlwmanifest, RSD, shortlink, adjacent-posts links, generator meta, REST API link, and feed links. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cleanup Old Revisions](mu-plugins/cleanup/cleanup-old-revisions.php) | Automatically removes old post revisions older than 30 days and limits revisions to 5 per post. | 1.0.0 | 6.6+ | 7.4+ |
 | [Cron Monitor](mu-plugins/cleanup/cron-monitor.php) | Records the timestamp of the last WordPress cron execution. | 1.1.0 | 6.6+ | 7.4+ |
 | [Custom Login Logo](mu-plugins/admin/custom-login-logo.php) | Replaces the WordPress logo on the login page with your site logo, icon, or name. Links to your homepage instead of wordpress.org. | 1.0.0 | 6.6+ | 7.4+ |
@@ -58,6 +60,8 @@
 | [Disable Pingback](mu-plugins/security/disable-pingback.php) | Disables pingback XML-RPC method to prevent IP disclosure attacks behind firewalls/proxies. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Plugin Update Checks](mu-plugins/disable/disable-plugin-update-checks.php) | Disables automatic plugin update checks to reduce server load. Useful for managed/frozen environments where updates are controlled manually. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Post by Email](mu-plugins/disable/disable-post-by-email.php) | Disables WordPress post-by-email functionality to improve security and reduce attack surface. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable REST API for Guests](mu-plugins/security/disable-rest-api-guests.php) | Blocks REST API access for unauthenticated users. Whitelisted routes (oEmbed) remain public. Use the 'mu_rest_guest_whitelist' filter to customise. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable RSS Feeds](mu-plugins/performance/disable-rss-feeds.php) | Redirects all RSS and Atom feed URLs to the homepage. Use only on sites that have no blog or do not need syndication. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Unnecessary Link Headers](mu-plugins/disable/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable User Enumeration](mu-plugins/security/disable-user-enumeration.php) | Prevents user enumeration via author archives and REST API to protect usernames from discovery. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable User Registration](mu-plugins/security/disable-user-registration.php) | Completely disables user registration via wp-login.php, REST API, and all registration endpoints | 1.0.0 | N/A+ | N/A+ |
@@ -83,6 +87,7 @@
 | [Restrict REST API Blocks](mu-plugins/security/restrict-rest-api-blocks.php) | Limits access to block-related REST API endpoints to authenticated users only. | 1.0.0 | 6.6+ | 7.4+ |
 | [Sanitize File Name](mu-plugins/media/sanitize-file-names.php) | Automatically removes accents and special characters from uploaded file names for better compatibility. | 1.0.0 | 6.6+ | 7.4+ |
 | [Simple Maintenance Mode](mu-plugins/maintenance/simple-maintenance-mode.php) | Simple maintenance mode that shows a branded page. Toggle by creating/deleting .maintenance file in wp-content. | 1.0.0 | 6.6+ | 7.4+ |
+| [Transient Cleaner](mu-plugins/cleanup/transient-cleaner.php) | Runs a daily WP-Cron job to delete expired transients from wp_options. Keeps the database tidy on sites that accumulate plugin transients over time. | 1.0.0 | 6.6+ | 7.4+ |
 | [WooCommerce Store Manager Mode](mu-plugins/woocommerce/store-manager.php) | Provides a simplified "Store Manager" view for WooCommerce users. Toggle between full WordPress admin and a decluttered, WooCommerce-focused interface via the admin bar. | 1.1.0 | 6.6+ | 7.4+ |
 
 <!-- PLUGIN_LIST_END -->
