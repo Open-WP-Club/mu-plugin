@@ -33,7 +33,7 @@
 <!-- PLUGIN_LIST_START -->
 | Plugin Name | Description | Version | WP | PHP |
 |-------------|-------------|---------|----|-----|
-| [404 Logger](mu-plugins/security/404-logger.php) | Logs 404 errors to a file for security monitoring and broken link detection. | 1.0.0 | 6.6+ | 7.4+ |
+| [404 Logger](mu-plugins/security/404-logger.php) | Logs 404 errors to a file for security monitoring and broken link detection. IP addresses are anonymized (last octet masked) for GDPR compliance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Add Footer Signature](mu-plugins/admin/add-footer-signature.php) | Adds a developer signature comment to the website footer for attribution and contact purposes. | 1.0.0 | 6.6+ | 7.4+ |
 | [Admin Color Scheme Lockdown](mu-plugins/admin/admin-color-scheme-lockdown.php) | Forces a single admin colour scheme for all users. Useful for white-label admin panels. Set MU_ADMIN_COLOR_SCHEME to any built-in slug (default, light, blue, coffee, ectoplasm, midnight, ocean, sunrise). | 1.0.0 | 6.6+ | 7.4+ |
 | [Admin Footer Info](mu-plugins/admin/admin-footer-info.php) | Shows PHP version, MySQL version, WordPress version, and memory usage in the admin footer. | 1.0.0 | 6.6+ | 7.4+ |
@@ -56,10 +56,12 @@
 | [Disable Block Notes](mu-plugins/disable/disable-block-notes.php) | Disables the collaboration notes feature in the block editor introduced in WordPress 6.9. | 1.0.0 | 6.9+ | 7.4+ |
 | [Disable Command Palette](mu-plugins/disable/disable-command-palette.php) | Disables the Command Palette (Ctrl+K / Cmd+K) feature in the WordPress admin. | 1.0.0 | 6.3+ | 7.4+ |
 | [Disable Comments Globally](mu-plugins/disable/disable-comments.php) | Completely disables comments, trackbacks, and pingbacks across the entire site. Removes all comment-related functionality from admin. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable Core XML Sitemap](mu-plugins/disable/disable-core-sitemap.php) | Disables the auto-generated /sitemap.xml introduced in WordPress 5.5 to prevent duplicate sitemaps when Rank Math, Yoast SEO, or another sitemap plugin is active. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Dashicons Frontend](mu-plugins/performance/disable-dashicons-frontend.php) | Remove Dashicons CSS from frontend for non-logged-in users to improve performance (saves ~40KB) | 1.0.0 | N/A+ | N/A+ |
 | [Disable Emoji Support](mu-plugins/performance/disable-emoji-support.php) | A utility plugin to disable emoji support. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable File Editing](mu-plugins/security/disable-file-editing.php) | Prevents editing of theme/plugin files from admin | 1.0.0 | N/A+ | N/A+ |
 | [Disable FloC](mu-plugins/disable/disable-floc.php) | A utility plugin to disable FLoC. | 1.0.0. | 6.6+ | 7.4+ |
+| [Disable Google Fonts](mu-plugins/privacy/disable-google-fonts.php) | Dequeues all Google Fonts stylesheets and removes preconnect hints to fonts.googleapis.com. EU courts have ruled that loading Google Fonts without prior consent violates GDPR. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Heartbeat API](mu-plugins/performance/disable-heartbeat-api.php) | Disables or limits the Heartbeat API to reduce server load. Keeps it active only in the post editor where it's needed. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable oEmbed](mu-plugins/performance/disable-oembed.php) | Disables WordPress oEmbed functionality to reduce HTTP requests and improve performance. Use if you don't embed external content. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Pattern Directory](mu-plugins/disable/disable-pattern-directory.php) | Prevents the block editor from fetching block patterns from api.wordpress.org on every editor load. Eliminates the external HTTP request and brief pattern-loading delay. | 1.0.0 | 6.6+ | 7.4+ |
@@ -76,10 +78,14 @@
 | [Disable Unnecessary Link Headers](mu-plugins/disable/disable-link-headers.php) | A utility plugin to disable Unnecessary Link Headers. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable User Enumeration](mu-plugins/security/disable-user-enumeration.php) | Prevents user enumeration via author archives and REST API to protect usernames from discovery. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable User Registration](mu-plugins/security/disable-user-registration.php) | Completely disables user registration via wp-login.php, REST API, and all registration endpoints | 1.0.0 | N/A+ | N/A+ |
+| [Disable WC Coupon Field](mu-plugins/woocommerce/disable-wc-coupon-field.php) | Hides the coupon field on cart and checkout pages. Prevents customers from abandoning checkout to search for discount codes on stores that don't use coupons. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable WC Guest Checkout](mu-plugins/woocommerce/disable-wc-guest-checkout.php) | Forces account registration at checkout. Required for subscription or membership stores where an account is needed to manage orders. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable WC Product Reviews](mu-plugins/woocommerce/disable-wc-product-reviews.php) | Disables the WooCommerce review system on products. Unlike the generic disable-comments plugin, this targets the WooCommerce review tab and rating option specifically. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable Welcome Panel](mu-plugins/admin/disable-welcome-panel.php) | Removes the welcome panel from the WordPress dashboard for a cleaner admin experience. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WooCommerce Cart Fragments](mu-plugins/woocommerce/disable-wc-cart-fragments.php) | Prevents WooCommerce from enqueuing the cart-fragments AJAX script on pages where no cart interaction is possible, reducing unnecessary AJAX requests on every page load. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WooCommerce Marketing Hub](mu-plugins/woocommerce/disable-wc-marketing-hub.php) | Removes the WooCommerce Marketing admin menu and disables marketing-related background cron events and HTTP calls to woocommerce.com. For stores that do not use Mailchimp or other WooCommerce marketing integrations. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WooCommerce Status Dashboard Widget](mu-plugins/woocommerce/disable-wc-status-widget.php) | Removes the WooCommerce status dashboard widget from the WordPress admin dashboard, reducing noise for sites that use WooCommerce Analytics or a custom overview instead. | 1.0.0 | 6.6+ | 7.4+ |
+| [Disable WordPress Search](mu-plugins/disable/disable-wp-search.php) | Redirects /?s= search queries to the homepage, eliminating unnecessary database queries on sites without search functionality. | 1.0.0 | 6.6+ | 7.4+ |
 | [Disable WP Version](mu-plugins/disable/disable-wp-version.php) | Remove WordPress version | 1.0.0. | 6.6+ | 7.4+ |
 | [Disable XML-RPC](mu-plugins/security/disable-xml-rpc.php) | A utility plugin to disable XML-RPC. | 1.0.0. | 6.6+ | 7.4+ |
 | [Disallow Weak Usernames](mu-plugins/security/disallow-weak-usernames.php) | Blocks creation of accounts with usernames commonly targeted by credential-stuffing attacks (admin, test, wordpress, etc.). | 1.0.0 | 6.6+ | 7.4+ |
@@ -89,6 +95,7 @@
 | [Force WooCommerce Strong Passwords](mu-plugins/woocommerce/force-wc-strong-passwords.php) | Applies password strength validation to WooCommerce registration and checkout forms. WooCommerce skips WordPress's default strength rules for customers; this closes that gap. | 1.0.0 | 6.6+ | 7.4+ |
 | [Hosting Disallowed Plugins](mu-plugins/maintenance/hosting-disallowed-plugins.php) | Disallows plugins known to cause issues on managed hosting platforms. Based on popular hosting platforms. | 1.1.0 | 6.6+ | 7.4+ |
 | [Lazy Load Gravatars](mu-plugins/performance/lazy-load-gravatars.php) | Defers loading of Gravatar images until they're needed, reducing initial page load time and external HTTP requests. | 1.0.0 | 6.6+ | 7.4+ |
+| [Lazy Load Iframes](mu-plugins/performance/lazy-load-iframes.php) | Adds loading="lazy" to iframes in post content (YouTube embeds, maps, etc.), deferring off-screen requests until the user scrolls near them. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Autoload Bloat](mu-plugins/cleanup/limit-autoload-bloat.php) | Runs daily to detect wp_options rows with autoload=yes that exceed a configurable byte threshold. Logs offenders and optionally sets them to autoload=no. Configure threshold via 'mu_autoload_size_threshold' filter (default 10 000 bytes). | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Cron Concurrency](mu-plugins/performance/limit-cron-concurrency.php) | Uses a transient-based lock to prevent multiple simultaneous wp-cron.php processes from running the same scheduled hook, reducing database contention on busy sites. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Image Sizes](mu-plugins/media/limit-image-sizes.php) | Removes unnecessary intermediate image sizes (medium_large, 1536x1536, 2048x2048) that WordPress generates by default. Reduces disk usage and upload processing time. Keep list via 'mu_allowed_image_sizes' filter. | 1.0.0 | 6.6+ | 7.4+ |
@@ -96,6 +103,7 @@
 | [Limit Post Revisions](mu-plugins/performance/limit-post-revisions.php) | Limits the number of post revisions stored in the database to reduce bloat and improve performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Limit Upload Size by Role](mu-plugins/media/limit-upload-size-by-role.php) | Sets different maximum upload file size limits for different user roles to prevent large uploads from non-admin users. | 1.0.0 | 6.6+ | 7.4+ |
 | [OpenWP Club Core](mu-plugins/admin/openwpclub-message.php) | Core functionality and branding for OpenWP Club managed WordPress sites. | 1.0.0 | 6.6+ | 7.4+ |
+| [Optimize Database Tables](mu-plugins/cleanup/optimize-database-tables.php) | Runs OPTIMIZE TABLE weekly on core WordPress tables to reclaim fragmented space and maintain query performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Optimize WooCommerce Assets](mu-plugins/performance/optimize-woocommerce-assets.php) | Only loads WooCommerce scripts and styles on shop-related pages to improve site performance. | 1.0.0 | 6.6+ | 7.4+ |
 | [Orphaned Post Meta Cleaner](mu-plugins/cleanup/orphaned-post-meta-cleaner.php) | Weekly cron job that deletes wp_postmeta rows whose post_id no longer exists in wp_posts. Reclaims space after posts are permanently deleted. | 1.0.0 | 6.6+ | 7.4+ |
 | [Preconnect Resource Hints](mu-plugins/performance/preconnect-resource-hints.php) | Outputs <link rel="preconnect"> tags for configurable external origins. Reduces round-trip latency before the first byte of external resources. Configure via the 'mu_preconnect_origins' filter. | 1.0.0 | 6.6+ | 7.4+ |
