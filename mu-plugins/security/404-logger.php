@@ -5,7 +5,7 @@
  *
  * Plugin name:       404 Logger
  * Plugin URI:        https://openwpclub.com
- * Description:       Logs 404 errors to a file for security monitoring and broken link detection.
+ * Description:       Logs 404 errors to a file for security monitoring and broken link detection. IP addresses are anonymized (last octet masked) for GDPR compliance.
  * Requires at least: 6.6
  * Requires PHP:      7.4
  * Version:           1.0.0
@@ -64,6 +64,10 @@ add_action(
         if (strpos($ip, ',') !== false) {
             $ip = trim(explode(',', $ip)[0]);
         }
+
+        // Anonymize for GDPR: mask last octet (IPv4) or last two groups (IPv6)
+        $ip = preg_replace('/\.\d+$/', '.xxx', $ip);
+        $ip = preg_replace('/:[0-9a-f]+:[0-9a-f]+$/i', ':xxxx:xxxx', $ip);
 
         // Format log entry
         $log_entry = sprintf(
