@@ -3,10 +3,10 @@
 /**
  * Plugin Name:       Cron Monitor
  * Plugin URI:        https://openwpclub.com
- * Description:       Records the timestamp of the last WordPress cron execution.
+ * Description:       Records the timestamp of the last WordPress cron execution. Warns in admin if DISABLE_WP_CRON is set but no cron has run in over 2 hours, indicating the server's real cron job isn't configured (or the loopback request is blocked).
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       cron-monitor
@@ -30,6 +30,21 @@ function get_last_cron_run()
   $last_run = get_option('cron_last_run', 0);
   return $last_run ? wp_date('Y-m-d H:i:s', $last_run) : 'Never recorded';
 }
+
+// Warn if DISABLE_WP_CRON is set but the server's real cron doesn't appear to be running
+add_action('admin_notices', function () {
+  if (!defined('DISABLE_WP_CRON') || !DISABLE_WP_CRON || !current_user_can('manage_options')) {
+    return;
+  }
+
+  $last_run = get_option('cron_last_run', 0);
+
+  if ($last_run && (current_time('timestamp') - $last_run) < 2 * HOUR_IN_SECONDS) {
+    return;
+  }
+
+  echo '<div class="notice notice-warning"><p><strong>Cron Monitor:</strong> DISABLE_WP_CRON is set, but no WP-Cron run has been recorded in the last 2 hours. Confirm the server\'s real cron job is calling wp-cron.php.</p></div>';
+});
 
 // Add a dashboard widget for admins
 add_action('wp_dashboard_setup', function () {
