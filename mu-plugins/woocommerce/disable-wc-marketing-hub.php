@@ -8,17 +8,13 @@
  * Description:       Removes the WooCommerce Marketing admin menu and disables marketing-related background cron events and HTTP calls to woocommerce.com. For stores that do not use Mailchimp or other WooCommerce marketing integrations.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       disable-wc-marketing-hub
  */
 
 defined('ABSPATH') or die();
-
-if (!defined('WC_PLUGIN_FILE')) {
-    return; // WooCommerce not active
-}
 
 // Remove the Marketing top-level menu
 add_action(

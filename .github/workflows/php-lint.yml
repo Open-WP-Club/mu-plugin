@@ -1,0 +1,39 @@
+name: PHP Syntax Compatibility
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'mu-plugins/**/*.php'
+      - '.github/workflows/php-lint.yml'
+  pull_request:
+    branches: [ main, master ]
+    paths:
+      - 'mu-plugins/**/*.php'
+      - '.github/workflows/php-lint.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4', '8.5']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Lint MU plugins
+        run: find mu-plugins -type f -name '*.php' -print0 | xargs -0 -n1 php -l

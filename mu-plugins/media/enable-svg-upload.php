@@ -5,10 +5,10 @@
  *
  * Plugin name:       Enable SVG Upload
  * Plugin URI:        https://openwpclub.com
- * Description:       Enables SVG file uploads with security sanitization to prevent XSS attacks. Adds media library preview support.
+ * Description:       Enables sanitized SVG uploads and Media Library previews. Still required on WordPress 7.1+, whose SVG Icon API does not enable SVG media uploads.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       enable-svg-upload
@@ -24,7 +24,6 @@ add_filter(
   'upload_mimes',
   static function ($mimes) {
     $mimes['svg'] = 'image/svg+xml';
-    $mimes['svgz'] = 'image/svg+xml';
     return $mimes;
   },
   10,
@@ -37,19 +36,25 @@ add_filter(
 add_filter(
   'wp_handle_upload_prefilter',
   static function ($file) {
-    // Only process SVG files
-    if (!isset($file['type']) || $file['type'] !== 'image/svg+xml') {
+    $extension = isset($file['name']) ? strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) : '';
+
+    // MIME values supplied by clients are not trustworthy; use the extension to
+    // decide whether the file must pass through the SVG sanitizer.
+    if ($extension !== 'svg') {
       return $file;
     }
 
+    $file['type'] = 'image/svg+xml';
+    $temporary_file = $file['tmp_name'] ?? '';
+
     // Check if file exists and is readable
-    if (!file_exists($file['tmp_name']) || !is_readable($file['tmp_name'])) {
+    if ($temporary_file === '' || !is_file($temporary_file) || !is_readable($temporary_file)) {
       $file['error'] = 'Unable to read SVG file.';
       return $file;
     }
 
     // Read file content
-    $svg_content = file_get_contents($file['tmp_name']);
+    $svg_content = file_get_contents($temporary_file);
 
     if ($svg_content === false) {
       $file['error'] = 'Unable to read SVG file content.';
@@ -57,7 +62,7 @@ add_filter(
     }
 
     // Sanitize SVG content
-    $sanitized_content = mu_sanitize_svg($svg_content);
+    $sanitized_content = openwpclub_sanitize_svg($svg_content);
 
     if ($sanitized_content === false) {
       $file['error'] = 'SVG file contains potentially malicious code and was blocked.';
@@ -65,7 +70,7 @@ add_filter(
     }
 
     // Write sanitized content back to file
-    if (file_put_contents($file['tmp_name'], $sanitized_content) === false) {
+    if (file_put_contents($temporary_file, $sanitized_content) === false) {
       $file['error'] = 'Unable to save sanitized SVG file.';
       return $file;
     }
@@ -82,70 +87,108 @@ add_filter(
  * @param string $svg_content Raw SVG content
  * @return string|false Sanitized SVG content or false if dangerous content detected
  */
-function mu_sanitize_svg($svg_content)
+function openwpclub_sanitize_svg($svg_content)
 {
-  // List of dangerous tags to remove
-  $dangerous_tags = [
-    'script',
-    'iframe',
-    'object',
-    'embed',
-    'link',
-    'style',
-    'foreignObject',
-    'base',
-    'form',
-    'input',
-    'textarea',
-    'button',
-  ];
-
-  // List of dangerous attributes to remove
-  $dangerous_attributes = [
-    'onload',
-    'onerror',
-    'onmouseover',
-    'onmouseout',
-    'onclick',
-    'ondblclick',
-    'onmousedown',
-    'onmouseup',
-    'onmousemove',
-    'onkeydown',
-    'onkeyup',
-    'onkeypress',
-    'onfocus',
-    'onblur',
-    'onchange',
-    'onsubmit',
-    'onreset',
-    'onselect',
-    'onabort',
-    'onbeforeunload',
-    'onunload',
-    'onresize',
-    'onscroll',
-  ];
-
-  // Check for dangerous patterns before parsing
-  foreach ($dangerous_tags as $tag) {
-    if (stripos($svg_content, '<' . $tag) !== false) {
-      error_log("SVG Upload: Blocked file containing dangerous tag: {$tag}");
-      return false;
-    }
-  }
-
-  // Check for javascript: protocol
-  if (stripos($svg_content, 'javascript:') !== false) {
-    error_log('SVG Upload: Blocked file containing javascript: protocol');
+  if (!class_exists('DOMDocument')) {
+    error_log('SVG Upload: The PHP DOM extension is required');
     return false;
   }
 
-  // Check for data: URIs with script
-  if (preg_match('/data:.*script/i', $svg_content)) {
-    error_log('SVG Upload: Blocked file containing data URI with script');
+  // DTDs and entities are unnecessary for images and can enable XXE or entity
+  // expansion attacks. Reject them before asking libxml to parse the document.
+  if (preg_match('/<!DOCTYPE|<!ENTITY/i', $svg_content)) {
+    error_log('SVG Upload: Blocked file containing a DTD or entity declaration');
     return false;
   }
+
+  $allowed_elements = array_fill_keys([
+    'svg',
+    'g',
+    'path',
+    'rect',
+    'circle',
+    'ellipse',
+    'line',
+    'polyline',
+    'polygon',
+    'defs',
+    'lineargradient',
+    'radialgradient',
+    'stop',
+    'clippath',
+    'mask',
+    'pattern',
+    'symbol',
+    'use',
+    'title',
+    'desc',
+    'text',
+    'tspan',
+  ], true);
+
+  $allowed_attributes = array_fill_keys([
+    'xmlns',
+    'xmlns:xlink',
+    'viewbox',
+    'width',
+    'height',
+    'x',
+    'y',
+    'x1',
+    'y1',
+    'x2',
+    'y2',
+    'cx',
+    'cy',
+    'r',
+    'rx',
+    'ry',
+    'd',
+    'points',
+    'fill',
+    'fill-opacity',
+    'fill-rule',
+    'stroke',
+    'stroke-width',
+    'stroke-linecap',
+    'stroke-linejoin',
+    'stroke-miterlimit',
+    'stroke-dasharray',
+    'stroke-dashoffset',
+    'stroke-opacity',
+    'opacity',
+    'transform',
+    'preserveaspectratio',
+    'id',
+    'class',
+    'role',
+    'aria-hidden',
+    'aria-label',
+    'focusable',
+    'clip-path',
+    'mask',
+    'gradientunits',
+    'gradienttransform',
+    'offset',
+    'stop-color',
+    'stop-opacity',
+    'patternunits',
+    'patterncontentunits',
+    'patterntransform',
+    'text-anchor',
+    'dominant-baseline',
+    'font-family',
+    'font-size',
+    'font-style',
+    'font-weight',
+    'letter-spacing',
+    'word-spacing',
+    'dx',
+    'dy',
+    'xml:space',
+    'href',
+    'xlink:href',
+  ], true);
 
   // Load SVG with DOMDocument for deeper sanitization
   $dom = new DOMDocument();
@@ -153,17 +196,28 @@ function mu_sanitize_svg($svg_content)
   $dom->preserveWhiteSpace = true;
   $dom->strictErrorChecking = false;
 
-  // Suppress warnings for malformed XML
-  libxml_use_internal_errors(true);
+  $previous_error_setting = libxml_use_internal_errors(true);
 
-  // Load SVG content
-  if (!$dom->loadXML($svg_content, LIBXML_NONET | LIBXML_NOENT)) {
+  // LIBXML_NOENT must not be used for untrusted uploads: it substitutes entities.
+  if (!$dom->loadXML($svg_content, LIBXML_NONET)) {
     error_log('SVG Upload: Failed to parse SVG file');
     libxml_clear_errors();
+    libxml_use_internal_errors($previous_error_setting);
     return false;
   }
 
   libxml_clear_errors();
+  libxml_use_internal_errors($previous_error_setting);
+
+  $root = $dom->documentElement;
+  if (
+    !$root ||
+    strtolower($root->localName) !== 'svg' ||
+    $root->namespaceURI !== 'http://www.w3.org/2000/svg'
+  ) {
+    error_log('SVG Upload: Invalid SVG root element or namespace');
+    return false;
+  }
 
   // Get all elements
   $xpath = new DOMXPath($dom);
@@ -173,38 +227,74 @@ function mu_sanitize_svg($svg_content)
     return false;
   }
 
-  // Remove dangerous attributes from all elements
+  $processing_instructions = $xpath->query('//processing-instruction()');
+  if ($processing_instructions !== false) {
+    $instructions = [];
+    foreach ($processing_instructions as $instruction) {
+      $instructions[] = $instruction;
+    }
+
+    foreach ($instructions as $instruction) {
+      $instruction->parentNode->removeChild($instruction);
+    }
+  }
+
+  $elements = [];
   foreach ($all_elements as $element) {
-    foreach ($dangerous_attributes as $attr) {
-      if ($element->hasAttribute($attr)) {
-        error_log("SVG Upload: Removed dangerous attribute: {$attr}");
-        $element->removeAttribute($attr);
+    $elements[] = $element;
+  }
+
+  foreach ($elements as $element) {
+    $element_name = strtolower($element->localName);
+    if (
+      !isset($allowed_elements[$element_name]) ||
+      ($element->namespaceURI !== null && $element->namespaceURI !== 'http://www.w3.org/2000/svg')
+    ) {
+      if ($element === $root) {
+        return false;
       }
+
+      $element->parentNode->removeChild($element);
+      continue;
     }
 
-    // Check for xlink:href with javascript
-    if ($element->hasAttribute('xlink:href')) {
-      $href = $element->getAttribute('xlink:href');
-      if (stripos($href, 'javascript:') !== false || stripos($href, 'data:') !== false) {
-        error_log('SVG Upload: Removed dangerous xlink:href');
-        $element->removeAttribute('xlink:href');
-      }
+    $attributes = [];
+    foreach ($element->attributes as $attribute) {
+      $attributes[] = $attribute;
     }
 
-    // Check for href with javascript
-    if ($element->hasAttribute('href')) {
-      $href = $element->getAttribute('href');
-      if (stripos($href, 'javascript:') !== false || stripos($href, 'data:') !== false) {
-        error_log('SVG Upload: Removed dangerous href');
-        $element->removeAttribute('href');
+    foreach ($attributes as $attribute) {
+      $attribute_name = strtolower($attribute->nodeName);
+      $value = html_entity_decode($attribute->nodeValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+      $remove = !isset($allowed_attributes[$attribute_name]);
+
+      if (strpos($attribute_name, 'on') === 0) {
+        $remove = true;
+      }
+
+      if (in_array($attribute_name, ['href', 'xlink:href'], true)) {
+        $remove = !preg_match('/^#[A-Za-z_][A-Za-z0-9_.:-]*$/', trim($value));
+      }
+
+      // Paint-server references are allowed only as local fragment URLs.
+      if (stripos($value, 'url(') !== false) {
+        $remove = !preg_match('/^url\(\s*["\']?#[A-Za-z_][A-Za-z0-9_.:-]*["\']?\s*\)$/i', trim($value));
+      }
+
+      if (preg_match('/(?:javascript|vbscript|data)\s*:/i', $value)) {
+        $remove = true;
+      }
+
+      if ($remove) {
+        $element->removeAttributeNode($attribute);
       }
     }
   }
 
-  // Save sanitized SVG
-  $sanitized = $dom->saveXML();
+  // Saving only the root element also strips document-level declarations.
+  $sanitized = $dom->saveXML($root);
 
-  return $sanitized;
+  return $sanitized === false ? false : $sanitized;
 }
 
 /**
@@ -215,7 +305,7 @@ add_filter(
   static function ($data, $file, $filename, $mimes) {
     $filetype = wp_check_filetype($filename, $mimes);
 
-    if ($filetype['ext'] === 'svg' || $filetype['ext'] === 'svgz') {
+    if (isset($filetype['ext'], $filetype['type']) && $filetype['ext'] === 'svg') {
       $data['ext'] = $filetype['ext'];
       $data['type'] = $filetype['type'];
     }
@@ -232,7 +322,11 @@ add_filter(
 add_filter(
   'wp_prepare_attachment_for_js',
   static function ($response, $attachment, $meta) {
-    if ($response['type'] === 'image' && $response['subtype'] === 'svg+xml') {
+    if (
+      isset($response['type'], $response['subtype'], $response['url']) &&
+      $response['type'] === 'image' &&
+      $response['subtype'] === 'svg+xml'
+    ) {
       $response['image'] = [
         'src' => $response['url'],
         'width' => 300,
@@ -269,17 +363,17 @@ add_action(
     if ($screen && $screen->base === 'upload') {
       echo '<style>
         /* Only target SVGs in media library grid view */
-        .wp-list-table .media-icon img[src$=".svg"] {
+        .wp-list-table .media-icon img[src*=".svg"] {
           width: 100%;
           height: auto;
         }
         /* Only target SVGs in media library list view */
-        .attachments-browser .attachment img[src$=".svg"] {
+        .attachments-browser .attachment img[src*=".svg"] {
           width: 100%;
           height: auto;
         }
         /* Modal attachment details */
-        .attachment-details img[src$=".svg"] {
+        .attachment-details img[src*=".svg"] {
           max-width: 100%;
           height: auto;
         }
@@ -341,6 +435,10 @@ add_action(
 add_action(
   'wp_ajax_dismiss_svg_security_notice',
   static function () {
+    if (!current_user_can('upload_files')) {
+      wp_die('Insufficient permissions', 403);
+    }
+
     if (!wp_verify_nonce($_POST['nonce'] ?? '', 'svg_security_nonce')) {
       wp_die('Security check failed');
     }

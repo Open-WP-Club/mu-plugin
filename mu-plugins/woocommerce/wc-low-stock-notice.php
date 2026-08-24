@@ -8,17 +8,13 @@
  * Description:       Adds a dashboard widget listing stock-managed products at or below their low-stock threshold, so store admins see restock needs without opening WooCommerce reports. Override the fallback threshold (used when a product has no threshold set) via the 'mu_wc_low_stock_fallback' filter (default 5).
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       wc-low-stock-notice
  */
 
 defined('ABSPATH') or die();
-
-if (!defined('WC_PLUGIN_FILE')) {
-    return;
-}
 
 add_action(
     'wp_dashboard_setup',

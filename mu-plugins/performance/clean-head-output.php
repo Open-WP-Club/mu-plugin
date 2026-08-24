@@ -5,10 +5,10 @@
  *
  * Plugin name:       Clean Head Output
  * Plugin URI:        https://openwpclub.com
- * Description:       Removes unnecessary tags from the frontend <head>: wlwmanifest, RSD, shortlink, adjacent-posts links, generator meta, REST API link, and feed links.
+ * Description:       Removes legacy and discovery tags from the frontend head, including generator, RSD, WLW, shortlink, adjacent-post, REST API, oEmbed, and feed links.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       clean-head-output
@@ -26,10 +26,18 @@ remove_action('wp_head', 'rsd_link');
 remove_action('wp_head', 'wp_shortlink_wp_head', 10);
 
 // Prev/next post links (<link rel="prev"> / <link rel="next">)
+remove_action('wp_head', 'index_rel_link');
+remove_action('wp_head', 'start_post_rel_link', 10);
+remove_action('wp_head', 'parent_post_rel_link', 10);
+remove_action('wp_head', 'adjacent_posts_rel_link', 10);
 remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10);
 
 // <meta name="generator" content="WordPress x.x.x">
 remove_action('wp_head', 'wp_generator');
+add_filter('the_generator', '__return_empty_string');
+
+// oEmbed discovery links. Full oEmbed disabling remains in disable-oembed.php.
+remove_action('wp_head', 'wp_oembed_add_discovery_links');
 
 // REST API link (<link rel="https://api.w.org/">)
 // Note: also removes REST API discoverability for unauthenticated clients.

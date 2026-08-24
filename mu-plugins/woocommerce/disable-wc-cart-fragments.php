@@ -8,17 +8,13 @@
  * Description:       Prevents WooCommerce from enqueuing the cart-fragments AJAX script on pages where no cart interaction is possible, reducing unnecessary AJAX requests on every page load.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       disable-wc-cart-fragments
  */
 
 defined('ABSPATH') or die();
-
-if (!defined('WC_PLUGIN_FILE')) {
-    return;
-}
 
 add_action(
     'wp_enqueue_scripts',

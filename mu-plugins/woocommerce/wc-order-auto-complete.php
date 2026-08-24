@@ -8,17 +8,13 @@
  * Description:       Automatically transitions orders containing only virtual or downloadable products from 'processing' to 'completed' immediately after payment. Eliminates manual order management for digital-goods stores.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       wc-order-auto-complete
  */
 
 defined('ABSPATH') or die();
-
-if (!defined('WC_PLUGIN_FILE')) {
-    return;
-}
 
 add_action(
     'woocommerce_payment_complete',

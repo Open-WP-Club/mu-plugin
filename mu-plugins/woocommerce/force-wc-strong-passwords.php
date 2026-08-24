@@ -8,17 +8,13 @@
  * Description:       Applies password strength validation to WooCommerce registration and checkout forms. WooCommerce skips WordPress's default strength rules for customers; this closes that gap.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       force-wc-strong-passwords
  */
 
 defined('ABSPATH') or die();
-
-if (!defined('WC_PLUGIN_FILE')) {
-    return;
-}
 
 /**
  * Validate WooCommerce password and return error message or empty string.

@@ -1,11 +1,14 @@
 <?php
 /**
- * Plugin Name: Disable User Registration
- * Description: Completely disables user registration via wp-login.php, REST API, and all registration endpoints
- * Version: 1.0.0
- * Author: OpenWP Club
- * Author URI: https://openwpclub.com
- * License: GPL v2 or later
+ * Plugin Name:       Disable User Registration
+ * Description:       Disables public WordPress self-registration through wp-login.php and the REST API without blocking users created by administrators, WooCommerce, or trusted integrations.
+ * Requires at least: 6.6
+ * Requires PHP:      7.4
+ * Version:           1.1.0
+ * Author:            OpenWP Club
+ * Author URI:        https://openwpclub.com
+ * License:           GPL v2 or later
+ * Text Domain:       disable-user-registration
  */
 
 // Prevent direct access
@@ -64,22 +67,3 @@ add_filter('rest_endpoints', function($endpoints) {
     }
     return $endpoints;
 });
-
-/**
- * Prevent user registration via wp_insert_user() and wp_create_user()
- * Allow user creation only for admins in admin context
- */
-add_action('user_register', function($user_id) {
-    // Allow if current user is admin and in admin area
-    if (is_admin() && current_user_can('create_users')) {
-        return;
-    }
-
-    // Block programmatic user registration
-    wp_delete_user($user_id);
-    wp_die(
-        __('User registration is disabled for this site.'),
-        __('Registration Disabled'),
-        ['response' => 403]
-    );
-}, 1);

@@ -5,16 +5,43 @@ on:
     branches: [ main, master ]
     paths:
       - 'mu-plugins/**'
+      - 'scripts/update-plugin-list.mjs'
       - '.github/workflows/update-plugin-list.yml'
   pull_request:
     branches: [ main, master ]
     paths:
       - 'mu-plugins/**'
+      - 'scripts/update-plugin-list.mjs'
   workflow_dispatch:
 
+concurrency:
+  group: update-plugin-list-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  update-plugin-list:
+  verify-plugin-list:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Verify README is current
+        run: node scripts/update-plugin-list.mjs --check
+
+  update-plugin-list:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -29,166 +56,7 @@ jobs:
           node-version: '24'
 
       - name: Scan MU-plugins and update README
-        run: |
-          cat << 'ENDOFSCRIPT' > scan-plugins.js
-          const fs = require('fs');
-          const path = require('path');
-
-          const IGNORED_FILES = new Set([
-            'index.php',
-            '000-autoloader.php'
-          ]);
-
-          function extractPluginInfo(filePath, content) {
-            const lines = content.split('\n');
-            const plugin = {
-              file: filePath,
-              name: '',
-              description: '',
-              version: '',
-              requiresWP: '',
-              requiresPHP: ''
-            };
-
-            let inHeader = false;
-            const headerLines = [];
-
-            for (const line of lines) {
-              const trimmed = line.trim();
-
-              if (trimmed.startsWith('/**')) {
-                inHeader = true;
-                continue;
-              }
-
-              if (inHeader && trimmed.endsWith('*/')) {
-                break;
-              }
-
-              if (inHeader) {
-                headerLines.push(trimmed.replace(/^\*\s?/, ''));
-              }
-            }
-
-            const header = headerLines.join('\n');
-
-            const patterns = {
-              name: /Plugin Name:\s*(.+)$/im,
-              description: /Description:\s*(.+)$/im,
-              version: /Version:\s*(.+)$/im,
-              requiresWP: /Requires at least:\s*(.+)$/im,
-              requiresPHP: /Requires PHP:\s*(.+)$/im
-            };
-
-            for (const key in patterns) {
-              const match = header.match(patterns[key]);
-              if (match) {
-                plugin[key] = match[1].trim();
-              }
-            }
-
-            return plugin;
-          }
-
-          function walk(dir, plugins) {
-            const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-            for (const entry of entries) {
-              const fullPath = path.join(dir, entry.name);
-
-              if (entry.isDirectory()) {
-                walk(fullPath, plugins);
-                continue;
-              }
-
-              if (
-                entry.isFile() &&
-                entry.name.endsWith('.php') &&
-                !IGNORED_FILES.has(entry.name)
-              ) {
-                const content = fs.readFileSync(fullPath, 'utf8');
-
-                if (
-                  content.includes('Plugin Name:') ||
-                  content.includes('Plugin name:')
-                ) {
-                  const plugin = extractPluginInfo(fullPath, content);
-                  if (plugin.name) {
-                    plugin.file = path.relative(process.cwd(), fullPath);
-                    plugins.push(plugin);
-                  }
-                }
-              }
-            }
-          }
-
-          function scanPlugins() {
-            const pluginsDir = path.join(process.cwd(), 'mu-plugins');
-
-            if (!fs.existsSync(pluginsDir)) {
-              console.log('mu-plugins directory not found');
-              return [];
-            }
-
-            const plugins = [];
-            walk(pluginsDir, plugins);
-
-            return plugins.sort((a, b) =>
-              a.name.localeCompare(b.name)
-            );
-          }
-
-          function generateMarkdownTable(plugins) {
-            if (!plugins.length) {
-              return '> No MU plugins found.';
-            }
-
-            let md = '| Plugin Name | Description | Version | WP | PHP |\n';
-            md += '|-------------|-------------|---------|----|-----|\n';
-
-            for (const p of plugins) {
-              md += `| [${p.name}](${p.file}) | ${p.description || 'N/A'} | ${p.version || 'N/A'} | ${p.requiresWP || 'N/A'}+ | ${p.requiresPHP || 'N/A'}+ |\n`;
-            }
-
-            return md;
-          }
-
-          function updateReadme(table) {
-            const readmePath = path.join(process.cwd(), 'README.MD');
-            const start = '<!-- PLUGIN_LIST_START -->';
-            const end = '<!-- PLUGIN_LIST_END -->';
-
-            let content = fs.existsSync(readmePath)
-              ? fs.readFileSync(readmePath, 'utf8')
-              : '# WordPress MU-Plugins\n\n## Available Plugins\n\n' + start + '\n' + end + '\n';
-
-            if (!content.includes(start) || !content.includes(end)) {
-              content += '\n\n## Available Plugins\n\n' + start + '\n' + end + '\n';
-            }
-
-            const before = content.split(start)[0];
-            const after = content.split(end)[1];
-
-            const updated =
-              before +
-              start +
-              '\n' +
-              table +
-              '\n' +
-              end +
-              after;
-
-            fs.writeFileSync(readmePath, updated);
-          }
-
-          const plugins = scanPlugins();
-          console.log(`Found ${plugins.length} MU plugins`);
-
-          updateReadme(generateMarkdownTable(plugins));
-          console.log('README updated');
-          ENDOFSCRIPT
-
-          node scan-plugins.js
+        run: node scripts/update-plugin-list.mjs
 
       - name: Check for changes
         id: changes

@@ -8,7 +8,7 @@
  * Description:       Monthly cron job that permanently deletes WooCommerce orders older than a configurable number of days in terminal statuses (completed, cancelled, refunded). Supports both HPOS and legacy post-based orders. Override age via 'mu_wc_order_retention_days' filter (default 730 = ~2 years).
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       wc-order-data-retention
@@ -16,13 +16,13 @@
 
 defined('ABSPATH') or die();
 
-if (!defined('WC_PLUGIN_FILE')) {
-    return;
-}
-
 add_action(
     'wp',
     static function () {
+        if (!class_exists('WooCommerce')) {
+            return;
+        }
+
         if (!wp_next_scheduled('mu_wc_order_retention')) {
             wp_schedule_event(time(), 'monthly', 'mu_wc_order_retention');
         }
@@ -34,6 +34,10 @@ add_action(
 add_action(
     'mu_wc_order_retention',
     static function () {
+        if (!function_exists('wc_get_orders')) {
+            return;
+        }
+
         $days     = (int) apply_filters('mu_wc_order_retention_days', 730);
         $statuses = apply_filters('mu_wc_order_retention_statuses', ['completed', 'cancelled', 'refunded']);
         $cutoff   = date('Y-m-d H:i:s', strtotime("-{$days} days"));
