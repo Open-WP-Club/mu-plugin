@@ -46,6 +46,9 @@ add_action('wp_mail_succeeded', static function () {
 });
 
 add_action('admin_notices', static function () {
+    if (function_exists('mu_operations_center_enabled')) {
+        return;
+    }
     if (!current_user_can('manage_options')) {
         return;
     }

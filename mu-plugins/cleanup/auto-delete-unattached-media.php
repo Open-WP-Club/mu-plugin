@@ -3,12 +3,12 @@
 /**
  * Auto-delete unattached media
  *
- * Plugin name:       Auto-Delete Unattached Media
+ * Plugin name:       Safe Unattached Media Cleanup
  * Plugin URI:        https://openwpclub.com
- * Description:       Weekly cron job that permanently deletes media library items with no parent post older than a configurable number of days. Prevents library bloat from orphaned uploads. Override age with 'mu_unattached_media_age_days' filter (default 30).
+ * Description:       Reports old unattached media weekly and only trashes or deletes it when the cleanup mode is explicitly changed.
  * Requires at least: 6.6
  * Requires PHP:      7.4
- * Version:           1.0.0
+ * Version:           2.0.0
  * Author:            OpenWP Club
  * License:           Apache-2.0
  * Text Domain:       auto-delete-unattached-media
@@ -17,7 +17,7 @@
 defined('ABSPATH') or die();
 
 add_action(
-    'wp',
+    'init',
     static function () {
         if (!wp_next_scheduled('mu_delete_unattached_media')) {
             wp_schedule_event(time(), 'weekly', 'mu_delete_unattached_media');
@@ -32,6 +32,9 @@ add_action(
     static function () {
         $days        = (int) apply_filters('mu_unattached_media_age_days', 30);
         $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$days} days"));
+        $mode        = defined('MU_CLEANUP_MODE') ? MU_CLEANUP_MODE : 'report';
+        $mode        = (string) apply_filters('mu_unattached_media_cleanup_mode', $mode);
+        $mode        = in_array($mode, ['report', 'trash', 'delete'], true) ? $mode : 'report';
 
         $attachments = get_posts([
             'post_type'      => 'attachment',
@@ -42,13 +45,25 @@ add_action(
             'fields'         => 'ids',
         ]);
 
-        foreach ($attachments as $attachment_id) {
-            wp_delete_attachment($attachment_id, true);
+        $affected = 0;
+        if ('report' !== $mode) {
+            foreach ($attachments as $attachment_id) {
+                $result = 'delete' === $mode
+                    ? wp_delete_attachment($attachment_id, true)
+                    : wp_trash_post($attachment_id);
+                if ($result) {
+                    $affected++;
+                }
+            }
         }
 
-        if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG && !empty($attachments)) {
-            error_log(sprintf('Auto-Delete Unattached Media: removed %d attachment(s).', count($attachments)));
-        }
+        update_option('mu_cleanup_unattached_media_report', [
+            'time'       => time(),
+            'mode'       => $mode,
+            'candidates' => count($attachments),
+            'affected'   => $affected,
+            'sample_ids' => array_map('absint', array_slice($attachments, 0, 20)),
+        ], false);
     },
     10,
     0

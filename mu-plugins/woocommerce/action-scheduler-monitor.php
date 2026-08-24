@@ -53,6 +53,9 @@ function mu_action_scheduler_admin_url()
 }
 
 add_action('admin_notices', static function () {
+    if (function_exists('mu_operations_center_enabled') && current_user_can('manage_options')) {
+        return;
+    }
     if (!current_user_can('manage_woocommerce')) {
         return;
     }
